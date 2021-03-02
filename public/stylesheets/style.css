@@ -7,3 +7,10 @@ body {
 a {
 	color: #00b7ff;
 }
+
+nav {
+	display: flex;
+	background: blue;
+}
+nav a {
+}

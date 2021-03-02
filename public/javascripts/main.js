@@ -23,6 +23,10 @@ function onSignIn(googleUser) {
 	console.log('Name: ' + profile.getName());
 	console.log('Image URL: ' + profile.getImageUrl());
 	console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+	// GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+    //     .requestIdToken(getString(R.string.server_client_id))
+    //     .requestEmail()
+    //     .build()
 }
 
 function signOut() {
@@ -41,3 +45,9 @@ function myAlert() {
     console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
   
 }
+
+
+//food database 
+
+// https://api.edamam.com/api/food-database/v2/parser?ingr=red%20apple&app_id=90aa6a3e&app_key=24f01456634cdf030a22c0e6bb73f0a3
+
