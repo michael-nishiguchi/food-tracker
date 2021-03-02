@@ -5,5 +5,7 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Food Tracker' });
 });
-
+router.post('/verifyToken', function(req, res, next) {
+  return res.redirect("https://facebook.com");
+});
 module.exports = router;

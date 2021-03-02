@@ -17,6 +17,16 @@ function onSignIn(googleUser) {
 	//     .requestEmail()
 	//     .build()
 	var auth2 = gapi.auth2.init();
+
+	var id_token = googleUser.getAuthResponse().id_token;
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', 'verifyToken');
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.onload = function() {
+	console.log('Signed in as: ' + xhr.responseText);
+	};
+	xhr.send('idtoken=' + id_token);
 }
 
 //sign out of GOogle
