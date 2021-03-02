@@ -27,7 +27,7 @@ function signOut() {
 	});
 }
 
-if (auth2.isSignedIn.get()) {
+if (auth2 != null && auth2.isSignedIn.get()) {
 	var profile = auth2.currentUser.get().getBasicProfile();
 	console.log('ID: ' + profile.getId());
 	console.log('Full Name: ' + profile.getName());
