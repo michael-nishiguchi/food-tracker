@@ -1,32 +1,32 @@
-// Check for click events on the navbar burger icon
-$('.navbar-burger').click(function() {
-	// Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-	$('.navbar-burger').toggleClass('is-active');
-	$('.navbar-menu').toggleClass('is-active');
-});
-
 //sign into Google
 function onSignIn(googleUser) {
 	var profile = googleUser.getBasicProfile();
-	console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-	console.log('Name: ' + profile.getName());
-	console.log('Image URL: ' + profile.getImageUrl());
-	console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-	// GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-	//     .requestIdToken(getString(R.string.server_client_id))
-	//     .requestEmail()
-	//     .build()
-	var auth2 = gapi.auth2.init();
+	// console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+	// console.log('Name: ' + profile.getName());
+	// console.log('Image URL: ' + profile.getImageUrl());
+	// console.log('Email: ' + profile.getEmail());
+
+	//var auth2 = gapi.auth2.init();
 
 	var id_token = googleUser.getAuthResponse().id_token;
 
 	var xhr = new XMLHttpRequest();
-	xhr.open('POST', 'verifyToken');
-	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.open('POST', '/login');
+	xhr.setRequestHeader('Content-Type', 'application/json');
 	xhr.onload = function() {
-	console.log('Signed in as: ' + xhr.responseText);
+		console.log('Signed in as: ' + xhr.responseText);
 	};
-	xhr.send('idtoken=' + id_token);
+	if (xhr.responseText == 'success') {
+		signOut();
+		location.assign('/profile');
+	}
+	xhr.send(
+		JSON.stringify({
+			token: id_token
+		})
+	);
+
+	//$.post('verifyToken', id_token);
 }
 
 //sign out of GOogle
@@ -48,21 +48,14 @@ if (auth2 != null && auth2.isSignedIn.get()) {
 }
 GoogleUser.getBasicProfile();
 
-
-
-
 function myAlert() {
-
-    var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-  
+	var profile = googleUser.getBasicProfile();
+	console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+	console.log('Name: ' + profile.getName());
+	console.log('Image URL: ' + profile.getImageUrl());
+	console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 }
 
-
-//food database 
+//food database
 
 // https://api.edamam.com/api/food-database/v2/parser?ingr=red%20apple&app_id=90aa6a3e&app_key=24f01456634cdf030a22c0e6bb73f0a3
-
