@@ -1,13 +1,5 @@
 //sign into Google
 function onSignIn(googleUser) {
-	var profile = googleUser.getBasicProfile();
-	// console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-	// console.log('Name: ' + profile.getName());
-	// console.log('Image URL: ' + profile.getImageUrl());
-	// console.log('Email: ' + profile.getEmail());
-
-	//var auth2 = gapi.auth2.init();
-
 	var id_token = googleUser.getAuthResponse().id_token;
 
 	var xhr = new XMLHttpRequest();
@@ -15,18 +7,16 @@ function onSignIn(googleUser) {
 	xhr.setRequestHeader('Content-Type', 'application/json');
 	xhr.onload = function() {
 		console.log('Signed in as: ' + xhr.responseText);
+		if (xhr.responseText == 'success') {
+			console.log('inside javascript');
+			signOut();
+			location.assign('/profile');
+		}
+		else {
+			console.log('not logged in');
+		}
 	};
-	if (xhr.responseText == 'success') {
-		signOut();
-		location.assign('/profile');
-	}
-	xhr.send(
-		JSON.stringify({
-			token: id_token
-		})
-	);
-
-	//$.post('verifyToken', id_token);
+	xhr.send(JSON.stringify({ token: id_token }));
 }
 
 //sign out of GOogle
@@ -37,16 +27,17 @@ function signOut() {
 	});
 }
 
-if (auth2 != null && auth2.isSignedIn.get()) {
-	var profile = auth2.currentUser.get().getBasicProfile();
-	console.log('ID: ' + profile.getId());
-	console.log('Full Name: ' + profile.getName());
-	console.log('Given Name: ' + profile.getGivenName());
-	console.log('Family Name: ' + profile.getFamilyName());
-	console.log('Image URL: ' + profile.getImageUrl());
-	console.log('Email: ' + profile.getEmail());
-}
-GoogleUser.getBasicProfile();
+// if (auth2 != null && auth2.isSignedIn.get()) {
+// 	var profile = auth2.currentUser.get().getBasicProfile();
+// 	console.log('ID: ' + profile.getId());
+// 	console.log('Full Name: ' + profile.getName());
+// 	console.log('Given Name: ' + profile.getGivenName());
+// 	console.log('Family Name: ' + profile.getFamilyName());
+// 	console.log('Image URL: ' + profile.getImageUrl());
+// 	console.log('Email: ' + profile.getEmail());
+// }
+
+//GoogleUser.getBasicProfile();
 
 function myAlert() {
 	var profile = googleUser.getBasicProfile();

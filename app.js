@@ -4,12 +4,18 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+//environmental variables
+require('dotenv').config();
+const app_id = process.env.APPLICATION_ID;
+const CLIENT_ID = process.env.CLIENT_ID;
+
+// google authentication
 const { google } = require('googleapis');
+//const { OAuth2Client } = require('google-auth-library');
 
 var bodyParser = require('body-parser');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./routes/router');
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
@@ -27,7 +33,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -44,29 +49,5 @@ app.use(function(err, req, res, next) {
 	res.status(err.status || 500);
 	res.render('error');
 });
-
-function checkAuthenticated(req, res, next) {
-	let token = req.cookies['session-token'];
-
-	let user = {};
-	async function verify() {
-		const ticket = await client.verifyIdToken({
-			idToken: token,
-			audience: CLIENT_ID // Specify the CLIENT_ID of the app that accesses the backend
-		});
-		const payload = ticket.getPayload();
-		user.name = payload.name;
-		user.email = payload.email;
-		user.picture = payload.picture;
-	}
-	verify()
-		.then(() => {
-			req.user = user;
-			next();
-		})
-		.catch((err) => {
-			res.redirect('/login');
-		});
-}
 
 module.exports = app;
