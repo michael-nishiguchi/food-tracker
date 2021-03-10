@@ -42,6 +42,7 @@ router.post('/login', (req, res) => {
 	console.log('app id: ' + app_id);
 	console.log('app key: ' + app_key);
 	let token = req.body.token;
+	console.log('token: ' + token);
 
 	async function verify() {
 		const ticket = await client.verifyIdToken({
