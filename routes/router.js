@@ -10,10 +10,6 @@ const app_key = process.env.APPLICATION_KEY;
 const fetch = require('node-fetch');
 const { render } = require('../app');
 
-console.log('client id: ' + client);
-console.log('app id: ' + app_id);
-console.log('app key: ' + app_key);
-
 //database
 const connectionString = process.env.DATABASE_URL;
 const pg = require('pg');
@@ -42,6 +38,9 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
+	console.log('client id: ' + CLIENT_ID);
+	console.log('app id: ' + app_id);
+	console.log('app key: ' + app_key);
 	let token = req.body.token;
 
 	async function verify() {
