@@ -1,23 +1,51 @@
 <% include partials/head %>
+
+
+
   <body>
-   <h1>This is the profile</h1>
+    <h1>This is the profile</h1>
+
     <%= user.name %>
 
-    <img src="<%= user.picture %>" alt="">
+      <img src="<%= user.picture %>" alt="">
 
 
+      <form action="/search_name" method="post">
+        <label for="food_search">Search for a food: </label>
+        <input id="food_search" type="text" name="food_search">
+        <input type="submit" value="Search">
+      </form>
 
-  </body>
-  <script>
+      
+      <% if(locals.data) { %>
+        <% data.hints.forEach(function(item) { %>
+          <ul>
+            <li><%= item.food.label %> </li>
+            <li value=""><%= item.food.nutrients.ENERC_KCAL %> per <%= item.measures[0].label %> </li>
+            <input placeholder="how much did you eat">
+            <select name="serving" >
 
-    var app = new Vue({
-      el: '#app',
-      data: {
-        message: 'Hello Vue!'
-      }
-    })
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="/javascripts/main.js"></script>
-</html>
+              <% item.measures.forEach(function(servingUnit) { %>
+                <option><%= servingUnit.label %></option>
+                <%})%>
+ 
+
+
+            </select>
+            <li><%= item.food.foodId %></li>
+            <li><img src="<%= item.food.image %>""></li>
+          </ul>
+          <% }) %>
+<%
+        }
+%>
+
+<a onclick="addFood()">Add food</a>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="/javascripts/main.js"></script>
+  
+        <script>
+         function addFood(){ $.post('/addFood'); }
+
+        </script>
+                </html>

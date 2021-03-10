@@ -6,8 +6,6 @@ var logger = require('morgan');
 
 //environmental variables
 require('dotenv').config();
-const app_id = process.env.APPLICATION_ID;
-const CLIENT_ID = process.env.CLIENT_ID;
 
 // google authentication
 const { google } = require('googleapis');
