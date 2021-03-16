@@ -1,0 +1,25 @@
+<% include partials/head %>
+
+
+
+  <body>
+    <h1>This is the history</h1>
+
+    <%= user.name %>
+
+      <img src="<%= user.picture %>" alt="">
+      <% if(locals.result) { %>
+        <% result.rows.forEach(function(item) { %>
+          <ul>
+            <li><%= item.food_name %> </li>
+            <li><%= item.calories %></li>
+          </ul>
+          
+          <% }) %>
+<%
+        }
+%>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="/javascripts/main.js"></script>
+      </html>

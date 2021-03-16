@@ -9,6 +9,12 @@
 
       <img src="<%= user.picture %>" alt="">
 
+      <form action="/addFood" method="post">
+        <label for="food_search">Add food: </label>
+        <input id="food_search" type="text" name="food_search">
+        <input type="submit" value="Search">
+      </form>
+
 
       <form action="/search_name" method="post">
         <label for="food_search">Search for a food: </label>
@@ -18,27 +24,36 @@
 
       
       <% if(locals.data) { %>
+        <% var myData = data %>
         <% data.hints.forEach(function(item) { %>
+          <form action="/getNutrients" method="post">
           <ul>
             <li><%= item.food.label %> </li>
-            <li value=""><%= item.food.nutrients.ENERC_KCAL %> per <%= item.measures[0].label %> </li>
-            <input placeholder="how much did you eat">
-            <select name="serving" >
+            <input value="<%= item.food.nutrients.ENERC_KCAL %>" readonly="readonly"> calories per serving
+            <%= //item.food.nutrients.ENERC_KCAL %> <!--per --> <%=// item.measures[0].label %>  
+            <input placeholder="how much did you eat" name="servingInput" class="servingInput">
+            <select name="serving" class="servingOptions">
 
               <% item.measures.forEach(function(servingUnit) { %>
-                <option><%= servingUnit.label %></option>
+                <option value="<%= servingUnit.uri %>"><%= servingUnit.label %> <%=servingUnit.weight%></option>
                 <%})%>
- 
+                
+            <input name="foodId" value="<%=item.food.foodId %>">
 
 
             </select>
-            <li><%= item.food.foodId %></li>
-            <li><img src="<%= item.food.image %>""></li>
+            <div >Total Calories: 
+                <div id="totalCalories"></div>
+            </div>
+
           </ul>
+          <input type="submit">
+        </form>
           <% }) %>
 <%
         }
 %>
+
 
 <a onclick="addFood()">Add food</a>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
