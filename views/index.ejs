@@ -1,12 +1,43 @@
 <% include partials/head %>
+
   <body>
     <% include partials/nav %>
 
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-    <h2>This is the home page</h2>
+      <div class="jumbotron">
+        <h1>Welcome to the Food Tracker</h1>
+        <h4 class="">track. analyze. reach your goals.</h4>
+      </div>
 
-    <a href="/login">Sign in here</a>
+      <div class="container">
+        <div class="row">
+          <div class="card col-sm">
+            <img class="card-img-top" src="images/edamam-logo.png" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">Track</h5>
+              <p class="card-text">Find quick and accurate results from the Edamam food database and nutritional
+                analysis API.</p>
+            </div>
+          </div>
+          <div class="card col-sm" >
+            <img class="card-img-top" src="images/analyze.jpg" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">Analyze</h5>
+              <p class="card-text">Analyze your caloric intake and macros over time. Find out what keeps you satiated.</p>
+            </div>
+          </div>
+          <div class="card col-sm" >
+            <img class="card-img-top" src="images/scale.jpg" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">Reach your goals</h5>
+              <p class="card-text">Whether you're looking to gain weight, lose, weight maintain or just feel healthier, we can help you reach your goals.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <h2>This is the home page</h2>
+
+      <a href="/login">Sign in here</a>
 
 
 
@@ -14,4 +45,5 @@
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/javascripts/main.js"></script>
-</html>
+
+  </html>

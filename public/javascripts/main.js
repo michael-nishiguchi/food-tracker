@@ -8,9 +8,9 @@ function onSignIn(googleUser) {
 	xhr.onload = function() {
 		console.log('Signed in as: ' + xhr.responseText);
 		if (xhr.responseText == 'success') {
-			console.log('inside javascript');
-			signOut();
-			location.assign('/profile');
+			console.log('logged in');
+			//signOut();
+			// location.assign('/history');
 		}
 		else {
 			console.log('not logged in');
@@ -24,6 +24,7 @@ function signOut() {
 	var auth2 = gapi.auth2.getAuthInstance();
 	auth2.signOut().then(function() {
 		console.log('User signed out.');
+		location.assign('/');
 	});
 }
 
@@ -46,6 +47,22 @@ function myAlert() {
 	console.log('Image URL: ' + profile.getImageUrl());
 	console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 }
+
+function goBack() {
+	window.history.back();
+}
+
+function asdf() {
+	console.log('before');
+	$.post('asdf', function(data) {
+		console.log(data);
+	});
+}
+
+// $('#getCalories').click(function(evt) {
+// 	let quantity = $('.servingInput');
+// 	console.log(quantity);
+// });
 
 //calculate calories as the user types
 $(function() {

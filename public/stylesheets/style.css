@@ -12,3 +12,35 @@ nav {
 }
 nav a {
 }
+
+.nutritionalFacts {
+	border: 1px solid black;
+	padding: 20px;
+	width: 350px;
+	margin: 0 auto;
+}
+
+.nutritionalFacts h2 {
+	text-align: center;
+	font-weight: bold;
+	border-bottom: 10px solid black;
+}
+
+.nutritionalFacts ul li {
+}
+
+.calories {
+	border-bottom: 4px solid black;
+}
+
+.nutritionItem {
+	border-bottom: 1px solid black;
+}
+
+.nutritionLabel {
+	font-weight: bold;
+}
+
+.dailyValue {
+	float: right;
+}

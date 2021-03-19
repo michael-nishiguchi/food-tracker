@@ -1,5 +1,5 @@
 <% include partials/head %>
-
+<% include partials/nav %>
 
 
   <body>
@@ -9,58 +9,80 @@
 
       <img src="<%= user.picture %>" alt="">
 
-      <form action="/addFood" method="post">
+      <form class="form-group" action="/addFood" method="post">
         <label for="food_search">Add food: </label>
-        <input id="food_search" type="text" name="food_search">
-        <input type="submit" value="Search">
+        <input class="form-control" id="food_search" type="text" name="food_search">
+        <input class="btn btn-primary" type="submit" value="Search">
       </form>
 
 
-      <form action="/search_name" method="post">
+      <form class="form-group" action="/search_name" method="post">
         <label for="food_search">Search for a food: </label>
-        <input id="food_search" type="text" name="food_search">
-        <input type="submit" value="Search">
+        <input class="form-control" id="food_search" type="text" name="food_search">
+        <input class="btn btn-primary" type="submit" value="Search">
       </form>
+      <div name="asdf" value="test"></div>
 
-      
-      <% if(locals.data) { %>
-        <% var myData = data %>
-        <% data.hints.forEach(function(item) { %>
-          <form action="/getNutrients" method="post">
-          <ul>
-            <li><%= item.food.label %> </li>
-            <input value="<%= item.food.nutrients.ENERC_KCAL %>" readonly="readonly"> calories per serving
-            <%= //item.food.nutrients.ENERC_KCAL %> <!--per --> <%=// item.measures[0].label %>  
-            <input placeholder="how much did you eat" name="servingInput" class="servingInput">
-            <select name="serving" class="servingOptions">
+      <% if(locals.test) { %>
+        <%= test %>
+          <%} %>
+            <% if(locals.search_results) { %>
 
-              <% item.measures.forEach(function(servingUnit) { %>
-                <option value="<%= servingUnit.uri %>"><%= servingUnit.label %> <%=servingUnit.weight%></option>
-                <%})%>
-                
-            <input name="foodId" value="<%=item.food.foodId %>">
+              <% search_results.hints.forEach(function(item) { %>
+                <form class="form-group"  action="/getNutrients" method="post">
+                  <!-- action="/getNutrients" -->
+                  <input name="search_results" hidden value="<%= JSON.stringify(search_results) %>">
+                  <ul>
+                    <h2>
+                      <%= item.food.label %>
+                    </h2>
+                    <input hidden name="food_name" value="<%= item.food.label %>">
+
+                    <small class="form-text">
+                      <%= item.food.nutrients.ENERC_KCAL %> calories per serving
+                    </small>
+
+                    <input class="form-control servingInput" placeholder="how much did you eat"  name="servingInput" required>
+                    <select class="form-control" name="serving" class="servingOptions">
+
+                      <% item.measures.forEach(function(servingUnit) { %>
+                        <option value="<%= servingUnit.uri %>">
+                          <%= servingUnit.label %>
+
+                        </option>
+                        <%})%>
+                          <input hidden class="form-control" name="foodId" value="<%=item.food.foodId %>">
+                    </select>
 
 
-            </select>
-            <div >Total Calories: 
-                <div id="totalCalories"></div>
-            </div>
 
-          </ul>
-          <input type="submit">
-        </form>
-          <% }) %>
-<%
-        }
-%>
+                    <!-- <input class="btn btn-primary" id="getNutrition" value="Get Nutrition">
+                    <input class="btn btn-primary" id="addTracker" value="Add to tracker"> -->
+                    <input class="btn btn-primary" id="getNutrition" type="submit" value="Get Nutrition">
+                    <input class="btn btn-primary" id="addTracker" type="submit" formAction="addFood" value="Add to tracker">
+
+                    <!-- <button class="btn btn-secondary" id="getCalories" type="button">Get Calories</button> -->
+
+                   <% if(locals.nutrition_results) { %>
+                    <div>Total Calories:
+                      <div id="totalCalories"> <%= nutrition_results.calories %> </div>
+                    </div>
+                  
+                  <% } %>
+
+                  </ul>
+                </form>
+                <% }) %>
+                  <% } %>
 
 
-<a onclick="addFood()">Add food</a>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                <script src="/javascripts/main.js"></script>
-  
-        <script>
-         function addFood(){ $.post('/addFood'); }
+                    <a onclick="addFood()">Add food</a>
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                    <script src="/javascripts/main.js"></script>
 
-        </script>
-                </html>
+                    <script>
+                      function addFood() { $.post('/addFood'); }
+
+                    </script>
+
+                    </html>
