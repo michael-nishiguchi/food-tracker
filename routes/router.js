@@ -16,6 +16,7 @@ const { Pool } = require('pg');
 const { admin_datatransfer_v1 } = require('googleapis');
 const { json } = require('express');
 const Cookies = require('cookies');
+const { homegraph } = require('googleapis/build/src/apis/homegraph');
 const pgConnection = new Pool({
 	connectionString: process.env.DATABASE_URL,
 	ssl: {
@@ -23,7 +24,7 @@ const pgConnection = new Pool({
 	}
 });
 
-router.get('/', checkAuthenticated, (req, res, next) => {
+router.get('/', (req, res, next) => {
 	res.render('index', {
 		user: req.user,
 		title: 'Food Tracker'
@@ -42,7 +43,6 @@ router.get('/login', (req, res) => {
 	console.log('navigate login page');
 	res.render('login', { title: 'Log in' });
 });
-
 router.post('/login', (req, res) => {
 	let token = req.body.token;
 	async function verify() {
@@ -60,7 +60,6 @@ router.post('/login', (req, res) => {
 			res.send('success');
 		})
 		.catch(console.error);
-	console.log('end of login');
 });
 router.post('/search_name', checkAuthenticated, async (req, res) => {
 	const search_term = req.body.food_search;
@@ -76,8 +75,6 @@ router.post('/search_name', checkAuthenticated, async (req, res) => {
 
 	getData(url, res)
 		.then((search_results) => {
-			// res.send(search_results);
-			//console.log(JSON.stringify(search_results));
 			res.render('profile', {
 				user: req.user,
 				search_results,
@@ -87,24 +84,27 @@ router.post('/search_name', checkAuthenticated, async (req, res) => {
 		.catch((error) => console.log(error));
 });
 router.get('/history', checkAuthenticated, (req, res) => {
+	console.log('rendering history');
+
+	let log = getHistory(req.user.id, res);
+	console.log('here is the result of getHistory() ' + log);
 	res.render('history', {
-		title: 'results',
-		user: req.user
+		title: 'history',
+		user: req.user,
+		log
 	});
+	console.log('after render');
 });
 router.get('/protectedRoute', checkAuthenticated, (req, res) => {
 	res.send('This route is protected');
 });
 router.get('/logout', (req, res) => {
+	console.log('logout');
 	res.clearCookie('session-token');
-	res.redirect('/login');
-});
-
-router.get('/asdf', checkAuthenticated, (req, res) => {
-	res.render('history', {
-		title: 'results',
-		message: 'asdfasdfasdf'
-	});
+	// res.render('index', {
+	// 	title: 'home'
+	// });
+	res.redirect('/index');
 });
 router.post('/addFood', checkAuthenticated, (req, res) => {
 	console.log('add food router');
@@ -131,12 +131,16 @@ router.post('/addFood', checkAuthenticated, (req, res) => {
 		}
 		else {
 			console.log('food added');
+			let log = getHistory(userId, res);
 
-			getHistory(userId, req.user, res);
+			res.render('history', {
+				title: 'history',
+				user: req.user,
+				log
+			});
 		}
 	});
 });
-router.get('/getHistory', checkAuthenticated, (req, res) => {});
 router.post('/getNutrients', checkAuthenticated, (req, res) => {
 	let quantity = req.body.servingInput;
 
@@ -212,8 +216,8 @@ async function postData(url = '', data, res) {
 	return response.json();
 }
 
-function getHistory(userId, user, res) {
-	let sql = 'SELECT * FROM log WHERE userId = $1';
+function getHistory(userId, res) {
+	let sql = 'SELECT * FROM log WHERE userId = $1'; // + userId;
 
 	const pgConnection = new Pool({
 		connectionString: process.env.DATABASE_URL,
@@ -222,29 +226,36 @@ function getHistory(userId, user, res) {
 		}
 	});
 
-	pgConnection.connect();
+	// const results = await pgConnection.query(sql)
+	// console.table(results.row);
 
+	pgConnection.connect();
 	pgConnection.query(sql, [ userId ], (err, result) => {
 		if (err) {
+			console.log(err);
 			throw err;
 		}
 		else {
-			//res.send(result);
-			res.render('history', {
-				title: 'history',
-				result,
-				user
-			});
-			return;
+			console.table(result.rows);
+			return result.rows;
 		}
 	});
-	return;
+	console.log('end of getHistory() function');
 }
 
 function checkAuthenticated(req, res, next) {
 	let token = req.cookies['session-token'];
+
 	let user = {};
 
+	if (token == null) {
+		console.log('no token. no auth');
+		res.render('index', {
+			title: 'Home',
+			message: 'Please log in or create an account'
+		});
+		return;
+	}
 	async function verify() {
 		const ticket = await client.verifyIdToken({
 			idToken: token,
@@ -264,7 +275,10 @@ function checkAuthenticated(req, res, next) {
 		})
 		.catch((err) => {
 			console.log(err);
-			res.redirect('/login');
+			res.redirect('index', {
+				title: 'home',
+				message: 'Please log in or create an account'
+			});
 		});
 }
 module.exports = router;

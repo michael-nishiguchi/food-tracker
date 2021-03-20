@@ -8,7 +8,17 @@ CREATE TABLE log(
     date_eaten date NOT NULL,
     servings decimal NOT NULL,
     meal varchar(200) NOT NULL,
-    userId bigint NOT NULL
+    userId text NOT NULL
+);
+
+CREATE TABLE userGoals (
+    id BIGSERIAL PRIMARY KEY NOT NULL,
+    int weight_goal,
+    int current_weight,
+    int fat_goal,
+    int protein_goal,
+    text google_id
+
 );
 
 

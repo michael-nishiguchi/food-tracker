@@ -1,16 +1,17 @@
 //sign into Google
 function onSignIn(googleUser) {
+	console.log('onSignIn function');
 	var id_token = googleUser.getAuthResponse().id_token;
 
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', '/login');
 	xhr.setRequestHeader('Content-Type', 'application/json');
 	xhr.onload = function() {
-		console.log('Signed in as: ' + xhr.responseText);
 		if (xhr.responseText == 'success') {
 			console.log('logged in');
 			//signOut();
-			// location.assign('/history');
+			//$.get('/history');
+			//location.assign('/history');
 		}
 		else {
 			console.log('not logged in');
@@ -24,7 +25,8 @@ function signOut() {
 	var auth2 = gapi.auth2.getAuthInstance();
 	auth2.signOut().then(function() {
 		console.log('User signed out.');
-		location.assign('/');
+		$.get('/logout');
+		//location.assign('/logout');
 	});
 }
 

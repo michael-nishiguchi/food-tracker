@@ -7,8 +7,9 @@
     <%= user.name %>
 
       <img src="<%= user.picture %>" alt="">
-      <% if(locals.result) { %>
-        <% result.rows.forEach(function(item) { %>
+      <% if(locals.log) { %>
+        <h2>hello</h2>
+        <% log.forEach(function(item) { %>
           <ul>
             <li><%= item.food_name %> </li>
             <li><%= item.calories %></li>
