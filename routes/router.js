@@ -24,13 +24,13 @@ const pgConnection = new Pool({
 	}
 });
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
 	res.render('index', {
 		user: req.user,
 		title: 'Food Tracker'
 	});
 });
-router.get('/about', (req, res, next) => {
+router.get('/about', (req, res) => {
 	res.render('about', { title: 'about' });
 });
 router.get('/profile', checkAuthenticated, (req, res) => {
@@ -84,16 +84,19 @@ router.post('/search_name', checkAuthenticated, async (req, res) => {
 		.catch((error) => console.log(error));
 });
 router.get('/history', checkAuthenticated, (req, res) => {
-	console.log('rendering history');
+	var today = new Date();
 
-	let log = getHistory(req.user.id, res);
-	console.log('here is the result of getHistory() ' + log);
-	res.render('history', {
-		title: 'history',
-		user: req.user,
-		log
-	});
-	console.log('after render');
+	getHistory(req.user, res, today);
+	// console.log('rendering history');
+
+	// let log = getHistory(req.user.id, res);
+	// console.log('here is the result of getHistory() ' + log);
+	// res.render('history', {
+	// 	title: 'history',
+	// 	user: req.user,
+	// 	log
+	// });
+	// console.log('after render');
 });
 router.get('/protectedRoute', checkAuthenticated, (req, res) => {
 	res.send('This route is protected');
@@ -119,47 +122,60 @@ router.post('/addFood', checkAuthenticated, (req, res) => {
 	let servings = req.body.quantity; //req.body.servings;
 	let meal = req.body.meal; //req.body.meal;
 
+	let date_eaten = req.body.date_eaten;
+	console.log(date_eaten);
+
 	let userId = req.user.id;
 
 	let sql =
-		'INSERT INTO log (food_name, calories, fat, protein, servings, meal, userID, carb) VALUES($1, $2, $3, $4, $5, $6, $7, $8)';
+		'INSERT INTO log (food_name, calories, fat, protein, servings, meal, userID, carb, date_eaten) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)';
 
 	pgConnection.connect();
-	pgConnection.query(sql, [ food_name, calories, fat, protein, servings, meal, userId, carb ], (err, result) => {
-		if (err) {
-			throw err;
-		}
-		else {
-			console.log('food added');
-			let log = getHistory(userId, res);
+	pgConnection.query(
+		sql,
+		[ food_name, calories, fat, protein, servings, meal, userId, carb, date_eaten ],
+		(err, result) => {
+			if (err) {
+				throw err;
+			}
+			else {
+				// (async () => {
+				// 	console.log('before async');
+				// 	console.log(await getHistory(userId, res));
+				// })();
+				var today = new Date();
 
-			res.render('history', {
-				title: 'history',
-				user: req.user,
-				log
-			});
+				getHistory(req.user, res, today);
+
+				// getHistory(userId, res).then((x) => {
+				// 	console.log(x);
+				// });
+
+				// getHistory(userId, res)
+				// 	.then((historyResults) => {
+				// 		//console.log(historyResults);
+				// 		console.table(historyResults);
+				// 	})
+				// 	.catch((error) => console.log(error));
+
+				// res.render('history', {
+				// 	title: 'history',
+				// 	user: req.user,
+				// 	log
+				// });
+			}
 		}
-	});
+	);
 });
+router.post('/deleteLog', checkAuthenticated, (req, res) => {});
+router.post('/editLog', checkAuthenticated, (req, res) => {});
 router.post('/getNutrients', checkAuthenticated, (req, res) => {
 	let quantity = req.body.servingInput;
-
-	//let serving = req.body.serving;
-
 	let uri = req.body.serving;
-	// let servingUnit = req.body.serving[1];
-
 	let foodId = req.body.foodId;
 	let search_results = req.body.search_results;
 	search_results = JSON.parse(search_results);
 	let foodName = req.body.food_name;
-
-	//let servingUnit = req.body.servingUnit;
-
-	// let foodLabel = uri.substr(52);
-	// console.log(foodLabel);
-
-	//repopulate results
 
 	const url =
 		'https://api.edamam.com/api/food-database/v2/nutrients?app_id=' +
@@ -216,8 +232,10 @@ async function postData(url = '', data, res) {
 	return response.json();
 }
 
-function getHistory(userId, res) {
-	let sql = 'SELECT * FROM log WHERE userId = $1'; // + userId;
+function getHistory(user, res, day) {
+	let sql = 'SELECT * FROM log WHERE userId = $1 AND date_eaten = $2 ORDER BY date_eaten DESC'; // + userId;
+
+	console.log(day);
 
 	const pgConnection = new Pool({
 		connectionString: process.env.DATABASE_URL,
@@ -230,14 +248,30 @@ function getHistory(userId, res) {
 	// console.table(results.row);
 
 	pgConnection.connect();
-	pgConnection.query(sql, [ userId ], (err, result) => {
+	pgConnection.query(sql, [ user.id, day ], (err, result) => {
 		if (err) {
 			console.log(err);
 			throw err;
 		}
 		else {
-			console.table(result.rows);
-			return result.rows;
+			result = result.rows;
+			console.table(result);
+
+			// for (var i = 0; i < result.length; i++);
+			// {
+			// for (item in result) {
+
+			// console.log(item);
+			// if (item.meal == 'snack') {
+			// 	console.log('this is snacc');
+			// 	console.log('food name: ' + item.meal.food_name);
+			// }
+
+			res.render('history', {
+				title: 'history',
+				user,
+				result
+			});
 		}
 	});
 	console.log('end of getHistory() function');
@@ -275,7 +309,7 @@ function checkAuthenticated(req, res, next) {
 		})
 		.catch((err) => {
 			console.log(err);
-			res.redirect('index', {
+			res.render('index', {
 				title: 'home',
 				message: 'Please log in or create an account'
 			});

@@ -1,25 +1,118 @@
 <% include partials/head %>
-<% include partials/nav %>
 
-  <body>
-    <h1>This is the history</h1>
+  <% include partials/nav %>
 
-    <%= user.name %>
+    <body>
+      <h1>This is the history</h1>
 
-      <img src="<%= user.picture %>" alt="">
-      <% if(locals.log) { %>
-        <h2>hello</h2>
-        <% log.forEach(function(item) { %>
-          <ul>
-            <li><%= item.food_name %> </li>
-            <li><%= item.calories %></li>
-          </ul>
-          
-          <% }) %>
-<%
-        }
-%>
+      <%= user.name %>
 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script src="/javascripts/main.js"></script>
-      </html>
+        <img src="<%= user.picture %>" alt="">
+
+        <% if(locals.result) { %>
+          <h2>
+            <%= result[0].date_eaten %>
+          </h2>
+
+          <h4>Breakfast</h4>
+          <% result.forEach((item)=> { %>
+            <% if (item.meal=='breakfast' ) { %>
+              <ul>
+                <li>
+                  <%= item.food_name %>
+                    <ul>
+                      <li>Calories: <%= item.calories %>
+                      </li>
+                      <li>Protein: <%= item.protein %>
+                      </li>
+                      <li>Fat: <%= item.fat %>
+                      </li>
+                      <li>Carbs: <%= item.carb %>
+                      </li>
+                    </ul>
+                </li>
+              </ul>
+              <% } %>
+                <% }); %>
+
+                  <h4>Lunch</h4>
+                  <% result.forEach((item)=> { %>
+                    <% if (item.meal=='lunch' ) { %>
+                      <ul>
+                        <li>
+                          <%= item.food_name %>
+                            <ul>
+                              <li>Calories: <%= item.calories %>
+                              </li>
+                              <li>Protein: <%= item.protein %>
+                              </li>
+                              <li>Fat: <%= item.fat %>
+                              </li>
+                              <li>Carbs: <%= item.carb %>
+                              </li>
+                            </ul>
+                        </li>
+                      </ul>
+                      <% } %>
+                        <% }); %>
+
+                          <h4>Dinner</h4>
+                          <% result.forEach((item)=> { %>
+                            <% if (item.meal=='dinner' ) { %>
+                              <ul>
+                                <li>
+                                  <%= item.food_name %>
+                                    <ul>
+                                      <li>Calories: <%= item.calories %>
+                                      </li>
+                                      <li>Protein: <%= item.protein %>
+                                      </li>
+                                      <li>Fat: <%= item.fat %>
+                                      </li>
+                                      <li>Carbs: <%= item.carb %>
+                                      </li>
+                                    </ul>
+                                </li>
+                              </ul>
+                              <% } %>
+                                <% }); %>
+
+                                  <h4>Snack</h4>
+                                  <% result.forEach((item)=> { %>
+                                    <% if (item.meal=='snack' ) { %>
+                                      <ul>
+                                        <li>
+                                          <%= item.food_name %>
+                                            <ul>
+                                              <li>Calories: <%= item.calories %>
+                                              </li>
+                                              <li>Protein: <%= item.protein %>
+                                              </li>
+                                              <li>Fat: <%= item.fat %>
+                                              </li>
+                                              <li>Carbs: <%= item.carb %>
+                                              </li>
+                                            </ul>
+                                        </li>
+                                      </ul>
+                                      <% } %>
+                                        <% }); %>
+
+                                          <% } %>
+
+
+
+
+
+
+
+
+
+
+
+
+                                            <script
+                                              src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                                            <script src="/javascripts/main.js"></script>
+
+                                            </html>

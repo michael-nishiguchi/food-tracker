@@ -11,13 +11,16 @@ require('dotenv').config();
 const { google } = require('googleapis');
 //const { OAuth2Client } = require('google-auth-library');
 
-var bodyParser = require('body-parser');
-
 var indexRouter = require('./routes/router');
 
 var app = express();
+
+//body parser
+var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 app.use(bodyParser.json());
+// app.use(express.json());
+// app.use(express.urlencoded());
 app.use(cookieParser());
 
 // view engine setup

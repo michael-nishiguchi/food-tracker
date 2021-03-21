@@ -1,3 +1,23 @@
+// $(document).ready ( function(){
+// 	alert("hi");
+// 	var date = new Date();
+// 	var dateString = date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString().padStart(2, 0) + '-' + date.getDate().toString().padStart(2, 0);
+
+// 	$("#datePicker").value = dateString;
+// 	console.log(dateString);
+//  });​
+
+$(document).ready(function() {
+	var date = new Date();
+	var dateString =
+		date.getFullYear().toString() +
+		'-' +
+		(date.getMonth() + 1).toString().padStart(2, 0) +
+		'-' +
+		date.getDate().toString().padStart(2, 0);
+	document.getElementById('datePicker').value = dateString;
+});
+
 //sign into Google
 function onSignIn(googleUser) {
 	console.log('onSignIn function');
@@ -52,13 +72,6 @@ function myAlert() {
 
 function goBack() {
 	window.history.back();
-}
-
-function asdf() {
-	console.log('before');
-	$.post('asdf', function(data) {
-		console.log(data);
-	});
 }
 
 // $('#getCalories').click(function(evt) {

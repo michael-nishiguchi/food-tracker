@@ -25,7 +25,21 @@ CREATE TABLE userGoals (
 ALTER TABLE log ADD COLUMN userId text NOT NULL;
 ALTER TABLE log ADD COLUMN carb decimal NOT NULL;
 
+ALTER TABLE log ADD COLUMN date_eaten date NOT NULL;
+
 ALTER TABLE log ADD COLUMN date_eaten DATE NOT NULL DEFAULT CURRENT_DATE;
 ALTER TABLE log ALTER COLUMN date_eaten TYPE date NOT NULL DEFAULT CURRENT_DATE;
 
 INSERT INTO log (food_name, calories, fat, protein, date_eaten, servings, meal, userID) VALUES('bread', 10, 20, 30, '10/2/2021', 2, 'lunch', 123123123);
+
+SELECT * FROM log WHERE userId = '104939860480852635549' ORDER BY date_eaten DESC;
+
+-- SELECT * FROM log WHERE userId = '104939860480852635549' ORDER BY date_eaten DESC, CASE 
+-- WHEN code='breakfast' THEN 1
+-- WHEN code='lunch' THEN 2
+-- WHEN code='dinner' THEN 3
+-- WHEN code='snack' THEN 4
+-- ELSE 5
+-- END;
+
+SELECT * FROM log WHERE userId = '104939860480852635549' ORDER BY date_eaten DESC, meal='breakfast', meal='lunch', meal='dinner', meal='snack';
