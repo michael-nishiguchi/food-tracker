@@ -42,4 +42,4 @@ SELECT * FROM log WHERE userId = '104939860480852635549' ORDER BY date_eaten DES
 -- ELSE 5
 -- END;
 
-SELECT * FROM log WHERE userId = '104939860480852635549' ORDER BY date_eaten DESC, meal='breakfast', meal='lunch', meal='dinner', meal='snack';
+SELECT * FROM log WHERE userId = '104939860480852635549' ORDER BY date_eaten DESC, meal='snack', meal='dinner', meal='lunch', meal='breakfast';

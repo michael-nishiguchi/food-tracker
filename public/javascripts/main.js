@@ -15,7 +15,9 @@ $(document).ready(function() {
 		(date.getMonth() + 1).toString().padStart(2, 0) +
 		'-' +
 		date.getDate().toString().padStart(2, 0);
-	document.getElementById('datePicker').value = dateString;
+	//document.getElementById('datePicker').value = dateString;
+
+	$('input[type=date]').val(dateString);
 });
 
 //sign into Google

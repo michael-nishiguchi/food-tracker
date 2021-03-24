@@ -9,10 +9,30 @@
 
         <img src="<%= user.picture %>" alt="">
 
-        <% if(locals.result) { %>
-          <h2>
-            <%= result[0].date_eaten %>
-          </h2>
+        <form action="/selectDay" method="POST">
+          <input type="date" class="form-control" name="date">
+          <button type="submit" class="btn btn-primary">Select Day</button>
+        </form>
+
+        <form action="/backDay" method="POST">
+          <button type="submit" class="btn btn-secondary">Back Day</button>
+        </form>
+        <form action="/forwardDay" method="POST">
+          <button type="submit" class="btn btn-secondary">Forward Day</button>
+        </form>
+        <% if(locals.result && result.length> 0) { %>
+          <h1>
+            <% let today=new Date(); let day=result[0].date_eaten.getDate(); let month=result[0].date_eaten.getMonth();
+              let year=result[0].date_eaten.getFullYear(); if(day==today.getDate() && month==today.getMonth() &&
+              year==today.getFullYear()){ %>
+              Today
+              <% } else { %>
+                <%= result[0].date_eaten.getDay() %> - <%= result[0].date_eaten.toLocaleString("default", {month: 'long'
+                    }) %>/<%= result[0].date_eaten.getDate() %>/<%= result[0].date_eaten.getFullYear() %>
+                        <% } %>
+          </h1>
+
+
 
           <h4>Breakfast</h4>
           <% result.forEach((item)=> { %>
@@ -29,6 +49,11 @@
                       </li>
                       <li>Carbs: <%= item.carb %>
                       </li>
+                      <form action="/deleteLog" method="POST">
+                        <input hidden name="logId" value="<%= item.id %>">
+                        <button class="btn btn-danger my-2 my-sm-0" type="submit">Delete</button>
+                      </form>
+                      
                     </ul>
                 </li>
               </ul>
@@ -50,6 +75,10 @@
                               </li>
                               <li>Carbs: <%= item.carb %>
                               </li>
+                              <form action="/deleteLog" method="POST">
+                                <input hidden name="logId" value="<%= item.id %>">
+                                <button class="btn btn-danger my-2 my-sm-0" type="submit">Delete</button>
+                              </form>
                             </ul>
                         </li>
                       </ul>
@@ -71,6 +100,10 @@
                                       </li>
                                       <li>Carbs: <%= item.carb %>
                                       </li>
+                                      <form action="/deleteLog" method="POST">
+                                        <input hidden name="logId" value="<%= item.id %>">
+                                        <button class="btn btn-danger my-2 my-sm-0" type="submit">Delete</button>
+                                      </form>
                                     </ul>
                                 </li>
                               </ul>
@@ -96,11 +129,9 @@
                                         </li>
                                       </ul>
                                       <% } %>
-                                        <% }); %>
-
+                                        <% }); } else { %>
+                                          <h2>Nothing logged for this day</h2>
                                           <% } %>
-
-
 
 
 
