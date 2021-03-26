@@ -14,10 +14,14 @@ $(document).ready(function() {
 		'-' +
 		(date.getMonth() + 1).toString().padStart(2, 0) +
 		'-' +
-		date.getDate().toString().padStart(2, 0);
-	//document.getElementById('datePicker').value = dateString;
+		date
+			.getDate()
+			.toString()
+			.padStart(2, 0);
 
-	$('input[type=date]').val(dateString);
+	console.log(dateString);
+
+	//$('input[type=date]').val(dateString);
 });
 
 //sign into Google
@@ -34,8 +38,7 @@ function onSignIn(googleUser) {
 			//signOut();
 			//$.get('/history');
 			//location.assign('/history');
-		}
-		else {
+		} else {
 			console.log('not logged in');
 		}
 	};
@@ -92,13 +95,23 @@ $(function() {
 		//referenceNode.after(newNode);
 
 		//var siblings = $(this).siblings();
-		var calories = $(this).prev().attr('value');
+		var calories = $(this)
+			.prev()
+			.attr('value');
 		console.log(calories);
 
-		var defaultServing = $(this).next().first().find('option:eq(0)').val();
+		var defaultServing = $(this)
+			.next()
+			.first()
+			.find('option:eq(0)')
+			.val();
 		console.log(defaultServing);
 
-		var servingSize = $(this).next().first().find(':selected').val();
+		var servingSize = $(this)
+			.next()
+			.first()
+			.find(':selected')
+			.val();
 		console.log(servingSize);
 
 		var servings = $(this).next();

@@ -1,63 +1,73 @@
 <% include partials/head %>
-<% include partials/nav %>
+  <% include partials/nav %>
 
 
-  <body>
-    <h1>Nutrition results</h1>
+    <body>
+      <h1>Nutrition results</h1>
 
-    <%= user.name %>
+      <%= user.name %>
 
-      <img src="<%= user.picture %>" alt="">
-    <button type="button" onclick="asdf()">Test</button>
+        <img src="<%= user.picture %>" alt="">
+        <button type="button" onclick="asdf()">Test</button>
 
-      <% if(locals.nutrition_results) { %>
-        <form class="nutritionalFacts" action="addFood" method="POST">
-          <input name="label" hidden value="<%= food_name %>">
-          <input name="quantity" hidden value="<%= quantity %>">
-          <input name="calories" hidden value="<%= Math.round(nutrition_results.totalNutrients.ENERC_KCAL.quantity) %>">
-          <input name="fat" hidden value="<%= Math.round(nutrition_results.totalNutrients.FAT.quantity) %>">
-          <input name="protein" hidden value="<%= Math.round(nutrition_results.totalNutrients.PROCNT.quantity) %>">
-          <input name="carb" hidden value="<%= Math.round(nutrition_results.totalNutrients.CHOCDF.quantity) %>">
+        <% if(locals.nutrition_results) { %>
+          <form class="nutritionalFacts" action="addFood" method="POST">
+            <input name="uri" hidden value="<%= uri %>">            
+            <input name="label" hidden value="<%= food_name %>">
+            <input name="quantity" hidden value="<%= quantity %>">
+            <input name="calories" hidden
+              value="<%= Math.round(nutrition_results.totalNutrients.ENERC_KCAL.quantity) %>">
+            <input name="fat" hidden value="<%= Math.round(nutrition_results.totalNutrients.FAT.quantity) %>">
+            <input name="protein" hidden value="<%= Math.round(nutrition_results.totalNutrients.PROCNT.quantity) %>">
+            <input name="carb" hidden value="<%= Math.round(nutrition_results.totalNutrients.CHOCDF.quantity) %>">
+            <input name="foodId" hidden value="<%= foodId %>">
+            <input name="serving_unit" hidden value="<%= serving_unit %>">
 
+            <h2>Nutrition Facts: <%= food_name %>
+            </h2>
+            <div class="calories"><span class="nutritionLabel">Calories:</span>
+              <%= Math.round(nutrition_results.totalNutrients.ENERC_KCAL.quantity) %>
+                <div class="dailyValue">
+                  <%= Math.round(nutrition_results.totalDaily.ENERC_KCAL.quantity) %>%
+                </div>
+            </div>
+            <div class="nutritionItem">-
+              <div class="dailyValue">% Daily Value</div>
+            </div>
+            <div class="nutritionItem"><span class="nutritionLabel">Protein:</span>
+              <%= Math.round(nutrition_results.totalNutrients.PROCNT.quantity) %>g
+                <div class="dailyValue">
+                  <%=Math.round( nutrition_results.totalDaily.PROCNT.quantity) %>%
+                </div>
+            </div>
+            <div class="nutritionItem"><span class="nutritionLabel">Fat:</span>
+              <%= Math.round(nutrition_results.totalNutrients.FAT.quantity) %>g
+                <div class="dailyValue">
+                  <%= Math.round(nutrition_results.totalDaily.FAT.quantity) %>%
+                </div>
+            </div>
+            <div class="nutritionItem"><span class="nutritionLabel">Carbs:</span>
+              <%= Math.round(nutrition_results.totalNutrients.CHOCDF.quantity) %>g
+                <div class="dailyValue">
+                  <%= Math.round(nutrition_results.totalDaily.CHOCDF.quantity) %>%
+                </div>
+            </div>
 
-        <h2>Nutrition Facts: <%= food_name %></h2>
-        <div class="calories"><span class="nutritionLabel">Calories:</span> <%= Math.round(nutrition_results.totalNutrients.ENERC_KCAL.quantity) %>
-          <div class="dailyValue"> <%= Math.round(nutrition_results.totalDaily.ENERC_KCAL.quantity) %>%</div>
-        </div>
-        <div class="nutritionItem">-
-          <div class="dailyValue">% Daily Value</div>
-        </div>
-        <div class="nutritionItem"><span class="nutritionLabel">Protein:</span> <%= Math.round(nutrition_results.totalNutrients.PROCNT.quantity) %>g
-          <div class="dailyValue"> <%=Math.round( nutrition_results.totalDaily.PROCNT.quantity) %>%</div>
-        </div>
-        <div class="nutritionItem"><span class="nutritionLabel">Fat:</span> <%= Math.round(nutrition_results.totalNutrients.FAT.quantity) %>g
-          <div class="dailyValue"> <%= Math.round(nutrition_results.totalDaily.FAT.quantity) %>%</div>
-        </div>
-        <div class="nutritionItem"><span class="nutritionLabel">Carbs:</span> <%= Math.round(nutrition_results.totalNutrients.CHOCDF.quantity) %>g
-          <div class="dailyValue"> <%= Math.round(nutrition_results.totalDaily.CHOCDF.quantity) %>%</div>
-        </div>
-        
-        <select class="form-control" name="meal">
-          <option value="breakfast">Breakfast</option>
-          <option value="lunch">Lunch</option>
-          <option value="dinner">Dinner</option>
-          <option value="snack">Snack</option>
-        </select>
+            <select class="form-control" name="meal">
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack">Snack</option>
+            </select>
 
-        <input name="date_eaten" class="form-control" type="date" id="datePicker">
+            <input name="date_eaten" class="form-control" type="date" id="datePicker">
 
-        <input type="submit" value="Add Food" class="btn btn-primary">
-        <button class="btn btn-secondary" onclick="goBack()" type="button">Go Back</button>
-      </form>
-<%
-        }
-%>
-        
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                <script src="/javascripts/main.js"></script>
-  
-        <script>
-         function addFood(){ $.post('/addFood'); }
+            <input type="submit" value="Add Food" class="btn btn-primary">
+            <button class="btn btn-secondary" onclick="goBack()" type="button">Go Back</button>
+          </form>
+          <% } %>
 
-        </script>
-                </html>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="/javascripts/main.js"></script>
+
+            </html>

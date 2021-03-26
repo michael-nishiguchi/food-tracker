@@ -66,7 +66,6 @@ router.post('/login', (req, res) => {
 });
 router.post('/search_name', checkAuthenticated, async (req, res) => {
 	const search_term = req.body.food_search;
-	//res.clearCookie('curr-search');
 	console.log();
 	const url =
 		'https://api.edamam.com/api/food-database/v2/parser?ingr=' +
@@ -77,14 +76,14 @@ router.post('/search_name', checkAuthenticated, async (req, res) => {
 		app_key;
 
 	getData(url, res)
-		.then((search_results) => {
+		.then(search_results => {
 			res.render('search_results', {
 				user: req.user,
 				search_results,
 				title: 'results'
 			});
 		})
-		.catch((error) => console.log(error));
+		.catch(error => console.log(error));
 });
 router.get('/history', checkAuthenticated, (req, res) => {
 	var today = new Date();
@@ -92,10 +91,19 @@ router.get('/history', checkAuthenticated, (req, res) => {
 	getHistory(req.user, res, dateString);
 });
 router.post('/backDay', checkAuthenticated, (req, res) => {
-	console.log('back day');
+	let date = req.body.date;
+	// console.log(date);
+	// const newDate = new Date(date);
+	// console.log(newDate);
+	// newDate.setDate(newDate.getDate() - 1);
+	// console.log(newDate);
+	getHistory(req.user, res, date);
 });
 router.post('/forwardDay', checkAuthenticated, (req, res) => {
-	console.log('forward day');
+	let date = req.body.date;
+	const newDate = new Date(date);
+	newDate.setDate(newDate.getDate() + 2);
+	getHistory(req.user, res, newDate);
 });
 router.post('/selectDay', checkAuthenticated, (req, res) => {
 	let day = req.body.date;
@@ -121,18 +129,40 @@ router.post('/addFood', checkAuthenticated, (req, res) => {
 	let servings = req.body.quantity;
 	let meal = req.body.meal;
 	let date_eaten = req.body.date_eaten;
+	let foodId = req.body.foodId;
+	let serving_unit = req.body.serving_unit;
+	let uri = req.body.uri;
 
-	addFood(req, res, food_name, calories, fat, protein, servings, meal, carb, date_eaten);
-	getHistory(req.user, res, date_eaten);
+	addFood(
+		req,
+		res,
+		food_name,
+		calories,
+		fat,
+		protein,
+		servings,
+		meal,
+		carb,
+		date_eaten,
+		serving_unit,
+		foodId,
+		uri
+	).then(() => {
+		getHistory(req.user, res, date_eaten);
+	});
 });
 router.post('/directAdd', checkAuthenticated, (req, res) => {
+	let toSplit = req.body.serving;
+	console.log(toSplit);
+
+	var uri = toSplit.substr(0, toSplit.indexOf(','));
+	let serving_unit = toSplit.split(',')[1];
+
 	let food_name = req.body.food_name;
 	let quantity = req.body.servingInput;
 	let foodId = req.body.foodId;
-	let uri = req.body.serving;
 	let meal = req.body.meal;
 	let date_eaten = req.body.date_eaten;
-	console.log('Food name: ' + food_name);
 
 	const url =
 		'https://api.edamam.com/api/food-database/v2/nutrients?app_id=' +
@@ -149,54 +179,96 @@ router.post('/directAdd', checkAuthenticated, (req, res) => {
 			}
 		]
 	};
-	console.log(myFood);
 
 	postData(url, myFood, res)
-		.then((nutrition_results) => {
-			//console.log(nutrition_results);
-			let calories = Math.round(nutrition_results.totalNutrients);
+		.then(nutrition_results => {
+			let calories = Math.round(nutrition_results.totalNutrients.ENERC_KCAL.quantity);
 			let fat = Math.round(nutrition_results.totalNutrients.FAT.quantity);
 			let protein = Math.round(nutrition_results.totalNutrients.PROCNT.quantity);
 			let carb = Math.round(nutrition_results.totalNutrients.CHOCDF.quantity);
-			console.log('calories: ' + ' fat: ' + fat + ' protein: ' + protein + ' carb: ' + carb);
+			console.log('calories: ' + calories + ' fat: ' + fat + ' protein: ' + protein + ' carb: ' + carb);
 
-			addFood(req, res, food_name, calories, fat, protein, quantity, meal, carb, date_eaten);
-
-			getHistory(req.user, res, date_eaten);
-			// res.render('history', {
-			// 	user: req.user,
-			// 	search_results,
-			// 	title: 'results',
-			// 	nutrition_results,
-			// 	food_name: foodName,
-			// 	quantity: quantity
-			// });
+			addFood(
+				req,
+				res,
+				food_name,
+				calories,
+				fat,
+				protein,
+				quantity,
+				meal,
+				carb,
+				date_eaten,
+				serving_unit,
+				foodId,
+				uri
+			).then(() => {
+				getHistory(req.user, res, date_eaten);
+			});
 		})
-		.catch((error) => console.log(error));
+		.catch(error => console.log(error));
 });
 router.post('/deleteLog', checkAuthenticated, (req, res) => {
 	let logId = req.body.logId;
 
-	let sql = 'DELETE FROM log WHERE id = $1';
+	let sql = 'DELETE FROM log WHERE id = $1 AND userid = $2';
 
 	pgConnection.connect();
-	pgConnection.query(sql, [ logId ], (err, result) => {
+	pgConnection.query(sql, [logId, req.user.id], (err, result) => {
 		if (err) {
 			console.log(err);
 			throw err;
-		}
-		else {
+		} else {
 			result = result.rows;
 			var today = new Date();
 			getHistory(req.user, res, today);
 		}
 	});
 });
-router.post('/editLog', checkAuthenticated, (req, res) => {});
+router.post('/editLog', checkAuthenticated, (req, res) => {
+	let quantity = req.body.quantity;
+	let uri = req.body.uri;
+	let foodId = req.body.foodId;
+
+	const url =
+		'https://api.edamam.com/api/food-database/v2/nutrients?app_id=' +
+		nutrition_app_id +
+		'&app_key=' +
+		nutrition_app_key;
+	let myFood = {
+		ingredients: [
+			{
+				quantity: Number(quantity),
+				measureURI: uri,
+				foodId: foodId
+			}
+		]
+	};
+
+	//get nutrition for updated servings
+	postData(url, myFood, res).then(nutrition_results => {
+		console.log(nutrition_results);
+		let calories = nutrition_results.totalNutrients.ENERC_KCAL.quantity;
+		let fat = nutrition_results.totalNutrients.FAT.quantity;
+		let protein = nutrition_results.totalNutrients.PROCNT.quantity;
+		let carb = nutrition_results.totalNutrients.CHOCDF.quantity;
+		let servings = quantity;
+
+		//update DB with new nutrition
+		alterTable(req.user, calories, fat, protein, carb, quantity, foodId).then(() => {
+			var today = new Date();
+			getHistory(req.user, res, today);
+		});
+	});
+});
 
 router.post('/getNutrients', checkAuthenticated, (req, res) => {
+	let toSplit = req.body.serving;
+
+	var uri = toSplit.substr(0, toSplit.indexOf(','));
+	let serving_unit = toSplit.split(',')[1];
 	let quantity = req.body.servingInput;
-	let uri = req.body.serving;
+
 	let foodId = req.body.foodId;
 	let search_results = req.body.search_results;
 	search_results = JSON.parse(search_results);
@@ -219,17 +291,21 @@ router.post('/getNutrients', checkAuthenticated, (req, res) => {
 	};
 
 	postData(url, myFood, res)
-		.then((nutrition_results) => {
+		.then(nutrition_results => {
+			console.log(nutrition_results.totalNutrients);
 			res.render('nutrition', {
 				user: req.user,
 				search_results,
 				title: 'results',
 				nutrition_results,
 				food_name: foodName,
-				quantity: quantity
+				quantity: quantity,
+				foodId,
+				serving_unit,
+				uri
 			});
 		})
-		.catch((error) => console.log(error));
+		.catch(error => console.log(error));
 });
 
 async function getData(url = '', res) {
@@ -258,17 +334,33 @@ async function postData(url = '', data, res) {
 
 //food nutrients param
 //throws error, no return
-function addFood(req, res, food_name, calories, fat, protein, servings, meal, carb, date_eaten) {
+async function addFood(
+	req,
+	res,
+	food_name,
+	calories,
+	fat,
+	protein,
+	servings,
+	meal,
+	carb,
+	date_eaten,
+	serving_unit,
+	foodId,
+	uri
+) {
 	let sql =
-		'INSERT INTO log (food_name, calories, fat, protein, servings, meal, userId, carb, date_eaten) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)';
+		'INSERT INTO log (food_name, calories, fat, protein, servings, meal, userId, carb, date_eaten, serving_unit, foodId, uri) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)';
 
 	pgConnection.connect();
 	pgConnection.query(
 		sql,
-		[ food_name, calories, fat, protein, servings, meal, req.user.id, carb, date_eaten ],
+		[food_name, calories, fat, protein, servings, meal, req.user.id, carb, date_eaten, serving_unit, foodId, uri],
 		(err, result) => {
 			if (err) {
 				throw err;
+			} else {
+				return 'success';
 			}
 		}
 	);
@@ -279,20 +371,44 @@ function getHistory(user, res, day) {
 	let sql = 'SELECT * FROM log WHERE userId = $1 AND date_eaten = $2 ORDER BY date_eaten DESC';
 
 	pgConnection.connect();
-	pgConnection.query(sql, [ user.id, day ], (err, result) => {
+	pgConnection.query(sql, [user.id, day], (err, result) => {
 		if (err) {
 			console.log(err);
 			throw err;
-		}
-		else {
+		} else {
 			result = result.rows;
-			console.table(result);
+			let dayObj = new Date(day);
+
+			let inputDate =
+				dayObj.getFullYear() +
+				'-' +
+				('0' + (dayObj.getMonth() + 1)).slice(-2) +
+				'-' +
+				('0' + dayObj.getDate()).slice(-2);
 
 			res.render('history', {
 				title: 'history',
 				user,
-				result
+				result,
+				dayObj,
+				day,
+				inputDate
 			});
+		}
+	});
+}
+
+async function alterTable(user, calories, fat, protein, carb, servings, foodId) {
+	let sql =
+		'UPDATE log SET calories = $1, fat = $2, protein = $3, carb = $4, servings = $5 WHERE userId = $6 AND foodId = $7';
+
+	pgConnection.connect();
+	pgConnection.query(sql, [calories, fat, protein, carb, servings, user.id, foodId], (err, result) => {
+		if (err) {
+			console.log(err);
+			throw err;
+		} else {
+			return 'success';
 		}
 	});
 }
@@ -326,7 +442,7 @@ function checkAuthenticated(req, res, next) {
 			req.user = user;
 			next();
 		})
-		.catch((err) => {
+		.catch(err => {
 			console.log(err);
 			res.render('index', {
 				title: 'home',

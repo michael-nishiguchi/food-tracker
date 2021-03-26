@@ -46,9 +46,9 @@
                     <select class="form-control" name="serving" class="servingOptions">
 
                       <% item.measures.forEach(function(servingUnit) { %>
-                        <option value="<%= servingUnit.uri %>">
+                        <% let myArr = [ servingUnit.uri, servingUnit.label] %>
+                        <option value="<%= myArr %>">
                           <%= servingUnit.label %>
-
                         </option>
                         <%})%>
                           <input hidden class="form-control" name="foodId" value="<%=item.food.foodId %>">
