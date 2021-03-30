@@ -530,6 +530,7 @@ async function alterTable(user, calories, fat, protein, carb, servings, foodId) 
 function checkAuthenticated(req, res, next) {
 	let token = req.cookies['session-token'];
 	let user = {};
+	console.log('this is the client id: ' + CLIENT_ID);
 
 	if (token == null) {
 		console.log('no token. no auth');
