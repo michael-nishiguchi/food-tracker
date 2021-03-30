@@ -9,23 +9,33 @@ const app_key = process.env.APPLICATION_KEY;
 const nutrition_app_id = process.env.NUTRITION_APP_ID;
 const nutrition_app_key = process.env.NUTRITION_APP_KEY;
 const fetch = require('node-fetch');
-const { render } = require('../app');
+const { render, connect } = require('../app');
+
+//date-fns library
+const { format } = require('date-fns');
+var parseISO = require('date-fns/parseISO');
+var add = require('date-fns/add');
+var toDate = require('date-fns/toDate');
+var getYear = require('date-fns/getYear');
+var getMonth = require('date-fns/getMonth');
+var getDate = require('date-fns/getDate');
 
 //controller
 var edamam_controller = require('../controllers/edamam');
 
 //database
 const { Pool } = require('pg');
-const { admin_datatransfer_v1 } = require('googleapis');
-const { json } = require('express');
-const Cookies = require('cookies');
-const { homegraph } = require('googleapis/build/src/apis/homegraph');
 const pgConnection = new Pool({
 	connectionString: process.env.DATABASE_URL,
 	ssl: {
 		rejectUnauthorized: false
 	}
 });
+
+const { admin_datatransfer_v1 } = require('googleapis');
+const { json } = require('express');
+const Cookies = require('cookies');
+const { homegraph } = require('googleapis/build/src/apis/homegraph');
 
 router.get('/', (req, res) => {
 	res.render('index', {
@@ -46,21 +56,53 @@ router.get('/login', (req, res) => {
 	console.log('navigate login page');
 	res.render('login', { title: 'Log in' });
 });
+// router.post('/login', (req, res) => {
+// 	let token = req.body.token;
+
+// 	async function verify() {
+// 		const ticket = await client.verifyIdToken({
+// 			idToken: token,
+// 			audience: CLIENT_ID
+// 		});
+// 		const payload = ticket.getPayload();
+
+// 		const userid = payload['sub'];
+// 	}
+// 	verify()
+// 		.then(() => {
+// 			res.cookie('session-token', token);
+// 			res.send('success');
+// 			//	let today = new Date();
+// 			//		getHistory(req.user, res, today);
+// 			res.redirect('../history');
+// 		})
+// 		.catch(console.error);
+// });
 router.post('/login', (req, res) => {
+	console.log('post login');
 	let token = req.body.token;
+	let user = {};
+
 	async function verify() {
 		const ticket = await client.verifyIdToken({
 			idToken: token,
 			audience: CLIENT_ID
 		});
 		const payload = ticket.getPayload();
-
-		const userid = payload['sub'];
+		user.name = payload.name;
+		user.email = payload.email;
+		user.picture = payload.picture;
+		user.id = payload.sub;
+		//const userid = payload['sub'];
 	}
 	verify()
 		.then(() => {
 			res.cookie('session-token', token);
 			res.send('success');
+			//req.user = user;
+
+			// let today = new Date();
+			// getHistory(user, res, today);
 		})
 		.catch(console.error);
 });
@@ -87,27 +129,30 @@ router.post('/search_name', checkAuthenticated, async (req, res) => {
 });
 router.get('/history', checkAuthenticated, (req, res) => {
 	var today = new Date();
-	let dateString = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-	getHistory(req.user, res, dateString);
+	//let dateString = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+	getHistory(req.user, res, today);
+	//getHistory(req.user, res, dateString);
+});
+router.post('/selectDay', checkAuthenticated, (req, res, next) => {
+	let date = req.body.date;
+
+	let sendDate = parseISO(date);
+
+	getHistory(req.user, res, sendDate);
 });
 router.post('/backDay', checkAuthenticated, (req, res) => {
 	let date = req.body.date;
-	// console.log(date);
-	// const newDate = new Date(date);
-	// console.log(newDate);
-	// newDate.setDate(newDate.getDate() - 1);
-	// console.log(newDate);
-	getHistory(req.user, res, date);
+	let dateObj = parseISO(date);
+	let sendDate = add(dateObj, { days: -1 });
+
+	getHistory(req.user, res, sendDate);
 });
 router.post('/forwardDay', checkAuthenticated, (req, res) => {
 	let date = req.body.date;
-	const newDate = new Date(date);
-	newDate.setDate(newDate.getDate() + 2);
-	getHistory(req.user, res, newDate);
-});
-router.post('/selectDay', checkAuthenticated, (req, res) => {
-	let day = req.body.date;
-	getHistory(req.user, res, day);
+	let dateObj = parseISO(date);
+	let sendDate = add(dateObj, { days: 1 });
+
+	getHistory(req.user, res, sendDate);
 });
 router.get('/protectedRoute', checkAuthenticated, (req, res) => {
 	res.send('This route is protected');
@@ -115,6 +160,7 @@ router.get('/protectedRoute', checkAuthenticated, (req, res) => {
 router.get('/logout', (req, res) => {
 	console.log('logout');
 	res.clearCookie('session-token');
+	console.log('im here');
 	res.render('index', {
 		title: 'home'
 	});
@@ -148,7 +194,8 @@ router.post('/addFood', checkAuthenticated, (req, res) => {
 		foodId,
 		uri
 	).then(() => {
-		getHistory(req.user, res, date_eaten);
+		let date = parseISO(date_eaten);
+		getHistory(req.user, res, date);
 	});
 });
 router.post('/directAdd', checkAuthenticated, (req, res) => {
@@ -163,6 +210,7 @@ router.post('/directAdd', checkAuthenticated, (req, res) => {
 	let foodId = req.body.foodId;
 	let meal = req.body.meal;
 	let date_eaten = req.body.date_eaten;
+	console.log('date in /direct add: ' + date_eaten);
 
 	const url =
 		'https://api.edamam.com/api/food-database/v2/nutrients?app_id=' +
@@ -203,7 +251,8 @@ router.post('/directAdd', checkAuthenticated, (req, res) => {
 				foodId,
 				uri
 			).then(() => {
-				getHistory(req.user, res, date_eaten);
+				let date = parseISO(date_eaten);
+				getHistory(req.user, res, date);
 			});
 		})
 		.catch(error => console.log(error));
@@ -366,7 +415,7 @@ async function addFood(
 	);
 }
 
-// date param - directs to history page
+//date param - directs to history page
 function getHistory(user, res, day) {
 	let sql = 'SELECT * FROM log WHERE userId = $1 AND date_eaten = $2 ORDER BY date_eaten DESC';
 
@@ -377,14 +426,18 @@ function getHistory(user, res, day) {
 			throw err;
 		} else {
 			result = result.rows;
-			let dayObj = new Date(day);
+			console.log(result);
 
+			// let inputDate =
+			// 	getYear(day) + '-' + ('0' + (getMonth(day) + 1)).slice(-2) + '-' + ('0' + getDate(day)).slice(-2);
 			let inputDate =
-				dayObj.getFullYear() +
+				day.getFullYear() +
 				'-' +
-				('0' + (dayObj.getMonth() + 1)).slice(-2) +
+				('0' + (day.getMonth() + 1)).slice(-2) +
 				'-' +
-				('0' + dayObj.getDate()).slice(-2);
+				('0' + day.getDate()).slice(-2);
+
+			let dayObj = parseISO(inputDate);
 
 			res.render('history', {
 				title: 'history',

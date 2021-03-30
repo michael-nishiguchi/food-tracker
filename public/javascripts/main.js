@@ -20,7 +20,7 @@ $(document).ready(function() {
 			.padStart(2, 0);
 
 	console.log(dateString);
-
+	$('.dateFill').val(dateString);
 	//$('input[type=date]').val(dateString);
 });
 
@@ -50,8 +50,8 @@ function signOut() {
 	var auth2 = gapi.auth2.getAuthInstance();
 	auth2.signOut().then(function() {
 		console.log('User signed out.');
-		$.get('/logout');
-		//location.assign('/logout');
+		//$.get('/logout');
+		location.assign('/logout');
 	});
 }
 

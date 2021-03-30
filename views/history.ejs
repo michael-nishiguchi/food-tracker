@@ -8,22 +8,20 @@
       <%= user.name %>
 
         <img src="<%= user.picture %>" alt="">
-
         <h1>
-          <%
-            let myDay = dayObj.getDate()
-            let month = dayObj.getMonth()
-            let year = dayObj.getYear()
-            %>
-          <% let today = new Date() %>
 
-          <% if(today.getDate() == myDay && today.getMonth() == month && today.getYear() == year) { %>
-            Today -
-            <% } %>
-            <%= dayObj.toLocaleString("default", {month: 'long'
-                    }) %>/<%= dayObj.getDate() %>/<%= dayObj.getFullYear()
-                     %>
-          </h1>
+          <% let myDay=dayObj.getDate() %>
+            <% let month=dayObj.getMonth() %>
+              <% let year=dayObj.getYear() %>
+                <% let today=new Date() %>
+
+
+                  <% if(today.getDate()==myDay && today.getMonth()==month && today.getYear()==year) { %>
+                    Today -
+                    <% } %>
+                      <%= dayObj.toLocaleString("default", {month: 'long' }) %>/<%= dayObj.getDate() %>/<%=
+                            dayObj.getFullYear() %>
+        </h1>
 
         <form action="/selectDay" method="POST">
           <input type="date" class="form-control" name="date" value="<%= inputDate %>">
@@ -34,51 +32,83 @@
         </form>
 
         <% if(locals.result && result.length> 0) { %>
-          <h1>
-            <% let today=new Date(); let day=result[0].date_eaten.getDate(); let month=result[0].date_eaten.getMonth();
-              let year=result[0].date_eaten.getFullYear(); if(day==today.getDate() && month==today.getMonth() &&
-              year==today.getFullYear()){ %>
-              Today
-              <% } else { %>
-                <%= result[0].date_eaten.getDay() %> - <%= result[0].date_eaten.toLocaleString("default", {month: 'long'
-                    }) %>/<%= result[0].date_eaten.getDate() %>/<%= result[0].date_eaten.getFullYear() %>
-                        <% } %>
-          </h1>
 
+          <h2>Breakfast</h2>
+          <% var breakfastCal=0 %>
+            <% result.forEach((item)=> { %>
+              <% if (item.meal=='breakfast' ) { %>
+                <ul>
+                  <li>
+                    <%= item.food_name %>
+                      <ul>
+                        <% breakfastCal +=item.calories %>
+                          <% include partials/logItem %>
 
+                      </ul>
+                  </li>
+                </ul>
+                <% } %>
+                  <% }); %>
+                    <h4>Total Breakfast Calories: <%= breakfastCal %>
+                    </h4>
 
-          <h4>Breakfast</h4>
-          <% result.forEach((item)=> { %>
-            <% if (item.meal=='breakfast' ) { %>
-              <% include partials/logItem %>
-              <% } %>
-                <% }); %>
+                    <h2>Lunch</h2>
+                    <% var lunchCal=0 %>
+                      <% result.forEach((item)=> { %>
+                        <% if (item.meal=='lunch' ) { %>
+                          <ul>
+                            <li>
+                              <%= item.food_name %>
+                                <ul>
+                                  <% lunchCal +=item.calories %>
+                                    <% include partials/logItem %>
+                                </ul>
+                            </li>
+                          </ul>
+                          <% } %>
+                            <% }); %>
+                              <h4>Total Lunch Calories: <%= lunchCal %>
+                              </h4>
 
-                  <h4>Lunch</h4>
-                  <% result.forEach((item)=> { %>
-                    <% if (item.meal=='lunch' ) { %>
-                      <% include partials/logItem %>
-                      <% } %>
-                        <% }); %>
+                              <h2>Dinner</h2>
+                              <% var dinnerCal=0 %>
+                                <% result.forEach((item)=> { %>
+                                  <% if (item.meal=='dinner' ) { %>
+                                    <ul>
+                                      <li>
+                                        <%= item.food_name %>
+                                          <ul>
+                                            <% dinnerCal +=item.calories %>
+                                              <% include partials/logItem %>
+                                          </ul>
+                                      </li>
+                                    </ul>
+                                    <% } %>
+                                      <% }); %>
+                                        <h4>Total Dinner Calories: <%= dinnerCal %>
+                                        </h4>
 
-                          <h4>Dinner</h4>
-                          <% result.forEach((item)=> { %>
-                            <% if (item.meal=='dinner' ) { %>
-                              <% include partials/logItem %>
-                              <% } %>
-                                <% }); %>
+                                        <h2>Snack</h2>
+                                        <% var snackCal=0 %>
+                                          <% result.forEach((item)=> { %>
+                                            <% if (item.meal=='snack' ) { %>
+                                              <ul>
+                                                <li>
+                                                  <%= item.food_name %>
+                                                    <ul>
+                                                      <% snackCal +=item.calories %>
+                                                        <% include partials/logItem %>
+                                                    </ul>
+                                                </li>
+                                              </ul>
+                                              <% } %>
+                                                <% }); } else { %>
+                                                  <h2>Nothing logged for this day</h2>
+                                                  <% } %>
+                                                    <h4>Total Snack Calories: <%= snackCal %>
+                                                    </h4>
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/javascripts/main.js"></script>
 
-                                  <h4>Snack</h4>
-                                  <% result.forEach((item)=> { %>
-                                    <% if (item.meal=='snack' ) { %>
-                                      <% include partials/logItem %>>
-                                      <% } %>
-                                        <% }); } else { %>
-                                          <h2>Nothing logged for this day</h2>
-                                          <% } %>
-
-                                            <script
-                                              src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                                            <script src="/javascripts/main.js"></script>
-
-                                            </html>
+    </html>

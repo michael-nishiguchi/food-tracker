@@ -3,7 +3,6 @@
 
 
   <body>
-    <h1>This is the profile</h1>
 
     <%= user.name %>
 
@@ -39,7 +38,7 @@
                     <input hidden name="food_name" value="<%= item.food.label %>">
 
                     <small class="form-text">
-                      <%= item.food.nutrients.ENERC_KCAL %> calories per serving
+                      <%= Math.round(item.food.nutrients.ENERC_KCAL) %> calories per serving
                     </small>
 
                     <input class="form-control servingInput" placeholder="how much did you eat"  name="servingInput" required>
@@ -60,8 +59,8 @@
                       <option value="dinner">Dinner</option>
                       <option value="snack">Snack</option>
                     </select>
-            
-                    <input name="date_eaten" class="form-control" type="date" id="datePicker">
+
+                    <input name="date_eaten" class="form-control dateFill" type="date" id="datePicker">
 
 
 
@@ -76,7 +75,7 @@
                     <div>Total Calories:
                       <div id="totalCalories"> <%= nutrition_results.calories %> </div>
                     </div>
-                  
+
                   <% } %>
 
                   </ul>

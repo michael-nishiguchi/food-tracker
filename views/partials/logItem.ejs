@@ -1,25 +1,19 @@
-<ul>
-    <li>
-      <%= item.food_name %>
-        <ul>
-          <form action="/deleteLog" method="POST">
-            <input hidden name="foodId" value="<%= item.foodid %>">
-            <input hidden name="uri" value="<%= item.uri %>">
-          <li>Calories: <%= item.calories %>
-          </li>
-          <li><input type="number" name="quantity" value="<%= item.servings %>"> <%= item.serving_unit %>
-          </li>
-          <li>Protein: <%= item.protein %>
-          </li>
-          <li>Fat: <%= item.fat %>
-          </li>
-          <li>Carbs: <%= item.carb %>
-          </li>
-            <input hidden name="logId" value="form-control"<%= item.id %>">
-            <button class="btn btn-danger my-2 my-sm-0" type="submit">Delete</button>
-            <input class="btn btn-success" type="submit" formAction="editLog" value="Edit Servings">
-          </form>
+<form action="/deleteLog" method="POST">
+  <input hidden name="foodId" value="<%= item.foodid %>">
+  <input hidden name="uri" value="<%= item.uri %>">
+  <li>Calories: <%= item.calories %>
+  </li>
+  <li><input type="number" name="quantity" value="<%= item.servings %>">
+    <%= item.serving_unit %>
+  </li>
+  <li>Protein: <%= item.protein %>
+  </li>
+  <li>Fat: <%= item.fat %>
+  </li>
+  <li>Carbs: <%= item.carb %>
+  </li>
 
-        </ul>
-    </li>
-  </ul>
+  <input hidden name="logId" value="form-control" <%=item.id %>">
+  <button class="btn btn-danger my-2 my-sm-0" type="submit">Delete</button>
+  <input class="btn btn-success" type="submit" formAction="editLog" value="Edit Servings">
+</form>

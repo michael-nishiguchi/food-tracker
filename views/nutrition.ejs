@@ -12,7 +12,7 @@
 
         <% if(locals.nutrition_results) { %>
           <form class="nutritionalFacts" action="addFood" method="POST">
-            <input name="uri" hidden value="<%= uri %>">            
+            <input name="uri" hidden value="<%= uri %>">
             <input name="label" hidden value="<%= food_name %>">
             <input name="quantity" hidden value="<%= quantity %>">
             <input name="calories" hidden
@@ -60,7 +60,7 @@
               <option value="snack">Snack</option>
             </select>
 
-            <input name="date_eaten" class="form-control" type="date" id="datePicker">
+            <input name="date_eaten" class="form-control dateFill" type="date" id="datePicker">
 
             <input type="submit" value="Add Food" class="btn btn-primary">
             <button class="btn btn-secondary" onclick="goBack()" type="button">Go Back</button>
