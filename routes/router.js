@@ -24,13 +24,36 @@ var getDate = require('date-fns/getDate');
 var edamam_controller = require('../controllers/edamam');
 
 //database
-const { Pool } = require('pg');
-const pgConnection = new Pool({
+const { Pool, Client } = require('pg');
+const pool = new Pool({
 	connectionString: process.env.DATABASE_URL,
 	ssl: {
 		rejectUnauthorized: false
 	}
 });
+const dbClient = new Client({
+	connectionString: process.env.DATABASE_URL,
+	ssl: {
+		rejectUnauthorized: false
+	}
+});
+pool.on('error', (err, client) => {
+	console.error('Unexpected error on idle client', err);
+	process.exit(-1);
+});
+
+// const dbClient = new DBClient({
+// 	user: 'dbuser',
+// 	host: 'database.server.com',
+// 	database: 'mydb',
+// 	password: 'secretpassword',
+// 	port: 3211
+// });
+// dbClient.connect();
+// dbClient.query('SELECT NOW()', (err, res) => {
+// 	console.log(err, res);
+// 	client.end();
+// });
 
 const { admin_datatransfer_v1 } = require('googleapis');
 const { json } = require('express');
@@ -82,6 +105,7 @@ router.post('/login', (req, res) => {
 	console.log('post login');
 	let token = req.body.token;
 	let user = {};
+	console.log('This is the token: ' + token);
 
 	async function verify() {
 		const ticket = await client.verifyIdToken({
@@ -89,6 +113,7 @@ router.post('/login', (req, res) => {
 			audience: CLIENT_ID
 		});
 		const payload = ticket.getPayload();
+		console.log('This is the payload: ' + payload);
 		user.name = payload.name;
 		user.email = payload.email;
 		user.picture = payload.picture;
@@ -262,8 +287,8 @@ router.post('/deleteLog', checkAuthenticated, (req, res) => {
 
 	let sql = 'DELETE FROM log WHERE id = $1 AND userid = $2';
 
-	pgConnection.connect();
-	pgConnection.query(sql, [logId, req.user.id], (err, result) => {
+	pool.connect();
+	pool.query(sql, [logId, req.user.id], (err, result) => {
 		if (err) {
 			console.log(err);
 			throw err;
@@ -401,8 +426,8 @@ async function addFood(
 	let sql =
 		'INSERT INTO log (food_name, calories, fat, protein, servings, meal, userId, carb, date_eaten, serving_unit, foodId, uri) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)';
 
-	pgConnection.connect();
-	pgConnection.query(
+	pool.connect();
+	pool.query(
 		sql,
 		[food_name, calories, fat, protein, servings, meal, req.user.id, carb, date_eaten, serving_unit, foodId, uri],
 		(err, result) => {
@@ -418,9 +443,10 @@ async function addFood(
 //date param - directs to history page
 function getHistory(user, res, day) {
 	let sql = 'SELECT * FROM log WHERE userId = $1 AND date_eaten = $2 ORDER BY date_eaten DESC';
+	let values = [user.id, day];
 
-	pgConnection.connect();
-	pgConnection.query(sql, [user.id, day], (err, result) => {
+	pool.connect();
+	pool.query(sql, [user.id, day], (err, result) => {
 		if (err) {
 			console.log(err);
 			throw err;
@@ -449,14 +475,47 @@ function getHistory(user, res, day) {
 			});
 		}
 	});
+
+	//promise method
+	// pool.connect().then(client => {
+	// 	return client
+	// 		.query(sql, [user.id, day])
+	// 		.then(res => {
+	// 			client.release();
+	// 			console.log(res.rows);
+	// 		})
+	// 		.catch(err => {
+	// 			client.release();
+	// 			console.log(err.stack);
+	// 		});
+	// });
+	//-------------------
+	// pool.connect();
+	// pool
+	// 	.query(sql, values)
+	// 	.then(result => console.log('output: ', result.rows))
+	// 	.catch(err =>
+	// 		setImmediate(() => {
+	// 			throw err;
+	// 		})
+	// 	);
+	//-------------------
+	// dbClient.connect();
+	// dbClient
+	// 	.query(sql, values)
+	// 	.then(res => {
+	// 		console.log(res.rows[0]);
+	// 		// { name: 'brianc', email: 'brian.m.carlson@gmail.com' }
+	// 	})
+	// 	.catch(e => console.error(e.stack));
 }
 
 async function alterTable(user, calories, fat, protein, carb, servings, foodId) {
 	let sql =
 		'UPDATE log SET calories = $1, fat = $2, protein = $3, carb = $4, servings = $5 WHERE userId = $6 AND foodId = $7';
 
-	pgConnection.connect();
-	pgConnection.query(sql, [calories, fat, protein, carb, servings, user.id, foodId], (err, result) => {
+	pool.connect();
+	pool.query(sql, [calories, fat, protein, carb, servings, user.id, foodId], (err, result) => {
 		if (err) {
 			console.log(err);
 			throw err;
