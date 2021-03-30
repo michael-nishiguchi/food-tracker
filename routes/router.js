@@ -3,7 +3,8 @@ var router = express.Router();
 const { OAuth2Client } = require('google-auth-library');
 const { policytroubleshooter } = require('googleapis/build/src/apis/policytroubleshooter');
 const CLIENT_ID = process.env.CLIENT_ID;
-const client = new OAuth2Client(CLIENT_ID);
+// const client = new OAuth2Client(CLIENT_ID);
+const googleClient = new OAuth2Client(CLIENT_ID);
 const app_id = process.env.APPLICATION_ID;
 const app_key = process.env.APPLICATION_KEY;
 const nutrition_app_id = process.env.NUTRITION_APP_ID;
@@ -108,12 +109,13 @@ router.post('/login', (req, res) => {
 	console.log('This is the token: ' + token);
 
 	async function verify() {
-		const ticket = await client.verifyIdToken({
+		// const ticket = await client.verifyIdToken({
+		const ticket = await googleClient.verifyIdToken({
 			idToken: token,
 			audience: CLIENT_ID
 		});
 		const payload = ticket.getPayload();
-		console.log('This is the payload: ' + payload);
+		console.table(payload);
 		user.name = payload.name;
 		user.email = payload.email;
 		user.picture = payload.picture;
@@ -538,7 +540,7 @@ function checkAuthenticated(req, res, next) {
 		return;
 	}
 	async function verify() {
-		const ticket = await client.verifyIdToken({
+		const ticket = await googleClient.verifyIdToken({
 			idToken: token,
 			audience: CLIENT_ID // Specify the CLIENT_ID of the app that accesses the backend
 		});
