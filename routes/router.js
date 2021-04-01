@@ -106,7 +106,6 @@ router.post('/login', (req, res) => {
 	console.log('post login');
 	let token = req.body.token;
 	let user = {};
-	console.log('This is the token: ' + token);
 
 	async function verify() {
 		// const ticket = await client.verifyIdToken({
@@ -115,7 +114,6 @@ router.post('/login', (req, res) => {
 			audience: CLIENT_ID
 		});
 		const payload = ticket.getPayload();
-		console.table(payload);
 		user.name = payload.name;
 		user.email = payload.email;
 		user.picture = payload.picture;
@@ -132,6 +130,89 @@ router.post('/login', (req, res) => {
 			// getHistory(user, res, today);
 		})
 		.catch(console.error);
+});
+router.get('/analyze', checkAuthenticated, (req, res) => {
+	let sql = 'SELECT * FROM log WHERE userId = $1 ORDER BY date_eaten';
+	let values = [req.user.id];
+
+	pool.connect();
+	pool.query(sql, values, (err, result) => {
+		if (err) {
+			console.log(err);
+			throw err;
+		} else {
+			result = result.rows;
+
+			//change date format
+			for (var i = 0; i < result.length; i++) {
+				let day = result[i].date_eaten.getDate();
+				let month = result[i].date_eaten.getMonth();
+				let year = result[i].date_eaten.getFullYear();
+				// result[i].date_eaten = month + '/' + day + '/' + year;
+				result[i].date_eaten = result[i].date_eaten.toLocaleString('default', { month: 'short' }) + '/' + day;
+			}
+
+			//get totals for each day
+			var newObj = {};
+			result.forEach(function(item) {
+				if (!newObj[item.date_eaten]) {
+					newObj[item.date_eaten] = {};
+					newObj[item.date_eaten]['calories'] = 0;
+					newObj[item.date_eaten]['fat'] = 0;
+					newObj[item.date_eaten]['protein'] = 0;
+					newObj[item.date_eaten]['carb'] = 0;
+				}
+				newObj[item.date_eaten]['calories'] += item.calories;
+				newObj[item.date_eaten]['fat'] += item.fat;
+				newObj[item.date_eaten]['protein'] += item.protein;
+				newObj[item.date_eaten]['carb'] += item.carb;
+			});
+
+			var proteinArr = [],
+				dateArr = [],
+				calArr = [],
+				carbArr = [],
+				fatArr = [];
+
+			for (let element in newObj) {
+				proteinArr.push(Math.round(newObj[element].protein));
+				calArr.push(Math.round(newObj[element].calories));
+				carbArr.push(Math.round(newObj[element].carb));
+				fatArr.push(Math.round(newObj[element].fat));
+				dateArr.push(element);
+			}
+
+			let nutritionChartData = {
+				type: 'line',
+				data: {
+					labels: dateArr, //dateArray, // [newObj.forEach(element => element.date_eaten)],
+					datasets: [
+						{ label: 'Protein', data: proteinArr, fill: false, borderColor: 'blue' },
+						{ label: 'Carbs', data: carbArr, fill: false, borderColor: 'red' },
+						{ label: 'Fat', data: fatArr, fill: false, borderColor: 'green' }
+					]
+				}
+			};
+
+			let calorieChartData = {
+				type: 'line',
+				data: {
+					labels: dateArr, //dateArray, // [newObj.forEach(element => element.date_eaten)],
+					datasets: [{ label: 'Calories', data: calArr, fill: false, borderColor: 'black' }]
+				}
+			};
+
+			let nutritionChart = 'https://quickchart.io/chart?c=' + JSON.stringify(nutritionChartData);
+			let calorieChart = 'https://quickchart.io/chart?c=' + JSON.stringify(calorieChartData);
+			res.render('analyze', {
+				user: req.user,
+				title: 'Analyze',
+				data: newObj,
+				nutritionChart,
+				calorieChart
+			});
+		}
+	});
 });
 router.post('/search_name', checkAuthenticated, async (req, res) => {
 	const search_term = req.body.food_search;
@@ -530,7 +611,6 @@ async function alterTable(user, calories, fat, protein, carb, servings, foodId) 
 function checkAuthenticated(req, res, next) {
 	let token = req.cookies['session-token'];
 	let user = {};
-	console.log('this is the client id: ' + CLIENT_ID);
 
 	if (token == null) {
 		console.log('no token. no auth');
