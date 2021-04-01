@@ -109,12 +109,12 @@ router.post('/login', (req, res) => {
 
 	async function verify() {
 		// const ticket = await client.verifyIdToken({
+		console.log('Client id: ' + CLIENT_ID);
 		const ticket = await googleClient.verifyIdToken({
 			idToken: token,
 			audience: CLIENT_ID
 		});
 		const payload = ticket.getPayload();
-		console.log('Client id: ' + CLIENT_ID);
 		user.name = payload.name;
 		user.email = payload.email;
 		user.picture = payload.picture;
