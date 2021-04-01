@@ -114,6 +114,7 @@ router.post('/login', (req, res) => {
 			audience: CLIENT_ID
 		});
 		const payload = ticket.getPayload();
+		console.log('Client id: ' + CLIENT_ID);
 		user.name = payload.name;
 		user.email = payload.email;
 		user.picture = payload.picture;
