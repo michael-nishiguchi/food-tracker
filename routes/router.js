@@ -67,6 +67,8 @@ router.post('/login', (req, res) => {
 	let token = req.body.token;
 	let user = {};
 
+	console.log(CLIENT_ID);
+	console.log(token);
 	async function verify() {
 		const ticket = await googleClient.verifyIdToken({
 			idToken: token,
