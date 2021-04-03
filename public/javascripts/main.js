@@ -22,6 +22,11 @@ $(document).ready(function() {
 	console.log(dateString);
 	$('.dateFill').val(dateString);
 	//$('input[type=date]').val(dateString);
+
+	//spinner while charts load
+	$('img').on('load', function() {
+		$('#spinner').fadeOut();
+	});
 });
 
 //sign into Google
@@ -54,18 +59,6 @@ function signOut() {
 		location.assign('/logout');
 	});
 }
-
-// if (auth2 != null && auth2.isSignedIn.get()) {
-// 	var profile = auth2.currentUser.get().getBasicProfile();
-// 	console.log('ID: ' + profile.getId());
-// 	console.log('Full Name: ' + profile.getName());
-// 	console.log('Given Name: ' + profile.getGivenName());
-// 	console.log('Family Name: ' + profile.getFamilyName());
-// 	console.log('Image URL: ' + profile.getImageUrl());
-// 	console.log('Email: ' + profile.getEmail());
-// }
-
-//GoogleUser.getBasicProfile();
 
 function myAlert() {
 	var profile = googleUser.getBasicProfile();

@@ -13,7 +13,7 @@
   <li>Carbs: <%= item.carb %>
   </li>
 
-  <input hidden name="logId" value="form-control" <%=item.id %>">
-  <button class="btn btn-danger my-2 my-sm-0" type="submit">Delete</button>
+  <input hidden name="logId" value="<%=item.id %>">
+  <input class="btn btn-danger my-2 my-sm-0" type="submit" formaction="deleteLog" value="Delete">
   <input class="btn btn-success" type="submit" formAction="editLog" value="Edit Servings">
 </form>
