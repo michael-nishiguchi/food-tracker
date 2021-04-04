@@ -1,5 +1,13 @@
 .env
+# !node_modules/
+# !node_modules/google-auth-library/
+# !node_modules/google-auth-library/*
+# node_modules/*
+
+# !node_modules/
+
 node_modules/*
-!node_modules/
 !node_modules/google-auth-library/
-!node_modules/google-auth-library/*
+
+# node_modules/google-auth-library/*
+# !node_modules/google-auth-library/
