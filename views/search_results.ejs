@@ -3,21 +3,18 @@
 
 
   <body>
+    <div class="container">
+      <h1>Search Results</h1>
 
-    <%= user.name %>
 
-      <img src="<%= user.picture %>" alt="">
-
-      <% if(locals.test) { %>
-        <%= test %>
-          <%} %>
             <% if(locals.search_results) { %>
-
+              <% if(search_results.length == 0 ) { %>
+                <h4>Your search gave no results</h4>
+                <% } %>
+                <div class="search-results">
               <% search_results.hints.forEach(function(item) { %>
-                <form class="form-group"  action="/getNutrients" method="post">
-                  <!-- action="/getNutrients" -->
-                  <input name="search_results" hidden value="<%= JSON.stringify(search_results) %>">
-                  <ul>
+                <form class="card"  action="/getNutrients" method="post">
+
                     <h2>
                       <%= item.food.label %>
                     </h2>
@@ -46,6 +43,7 @@
                       <option value="snack">Snack</option>
                     </select>
 
+
                     <input name="date_eaten" class="form-control dateFill" type="date" id="datePicker">
 
 
@@ -64,19 +62,18 @@
 
                   <% } %>
 
-                  </ul>
+
                 </form>
                 <% }) %>
                   <% } %>
+                </div>
+                </div>
 
-
-                    <a onclick="addFood()">Add food</a>
-                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                    <script src="/javascripts/main.js"></script>
+                    <%- include partials/end-body-scripts.ejs %>
 
                     <script>
                       function addFood() { $.post('/addFood'); }
 
                     </script>
-
+  </body>
                     </html>

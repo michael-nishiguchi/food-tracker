@@ -9,20 +9,23 @@
 
                   </div>
                 <div id="spinner">
-                    <div class="d-flex align-items-center spinner">
-                        <strong>Loading...</strong>
-                        <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                    <h2> Generating Charts...
+                    <div class="loader">
+
                     </div>
                 </div>
 
-
-
-                <img src="<%= calorieChart %>" class="chart img-fluid">
-                <img src="<%= nutritionChart %>" class="chart img-fluid">
-
+                <div class="card">
+                <img src="<%= calorieChart %>" class="chart">
+                </div>
+                <div class="gutter"></div>
+                <div class="card">
+                <img src="<%= nutritionChart %>" class="chart">
             </div>
+            </div>
+            <div class="gutter"></div>
+            <%- include partials/end-body-scripts.ejs %>
         </body>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="/javascripts/main.js"></script>
+
 
         </html>

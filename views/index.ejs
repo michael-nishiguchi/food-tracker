@@ -3,47 +3,56 @@
   <body>
     <% include partials/nav %>
 
-      <div class="jumbotron">
+<div class="container">
         <h1>Welcome to the Food Tracker</h1>
-        <h4 class="">track. analyze. reach your goals.</h4>
-        <% if(locals.message) { %>
-          <script>alert("You are not logged in")</script>
-        <% } %>
+        <h4>track. analyze. reach your goals.</h4>
 
-      </div>
 
-      <div class="container">
-        <div class="row">
-          <div class="card col-sm">
-            <img class="card-img-top" src="images/edamam-logo.png" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Track</h5>
-              <p class="card-text">Find quick and accurate results from the Edamam food database and nutritional
-                analysis API.</p>
-            </div>
+
+      <div class="card center-text">
+        <div class="third">
+          <div class="icon">
+            <i class="fas fa-clipboard-list"></i>
+
+
           </div>
-          <div class="card col-sm" >
-            <img class="card-img-top" src="images/analyze.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Analyze</h5>
-              <p class="card-text">Analyze your caloric intake and macros over time. Find out what keeps you satiated.</p>
-            </div>
-          </div>
-          <div class="card col-sm" >
-            <img class="card-img-top" src="images/scale.jpg" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Reach your goals</h5>
-              <p class="card-text">Whether you're looking to gain weight, lose, weight maintain or just feel healthier, we can help you reach your goals.</p>
-            </div>
+          <h4>
+            Track
+          </h4>
+          <div class="card-content">
+            Find quick and accurate results from the <span class="highlight">Edamam food database</span> and nutritional
+            analysis API.
           </div>
         </div>
+        <div class="third">
+          <div class="icon">
+            <i class="far fa-chart-bar"></i>
+          </div>
+          <h4>
+            Analyze
+          </h4>
+          <div class="card-content">
+            <span class="highlight">Analyze</span> your caloric intake and macros over time. Find out what keeps you satiated.
+          </div>
+        </div>
+        <div class="third">
+          <div class="icon">
+            <i class="fas fa-weight"></i>
+
+
+          </div>
+          <h4>
+            Reach your goals
+          </h4>
+          <div class="card-content">
+            Whether you're looking to gain weight, lose, weight maintain or just feel healthier, we can help you <span class="highlight">reach your goals.</span>
+          </div>
+        </div>
+
       </div>
 
 
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 
-
-      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-  <script src="/javascripts/main.js"></script>
+<%- include partials/end-body-scripts.ejs %>
 </body>
   </html>

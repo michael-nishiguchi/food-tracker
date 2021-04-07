@@ -4,114 +4,86 @@
 
     <body>
       <div class="container">
-      <h1>This is the history</h1>
+        <h1>Food Log </h1>
 
-      <%= user.name %>
-
-        <img src="<%= user.picture %>" alt="">
-        <h1>
+        <h4>
 
           <% let myDay=dayObj.getDate() %>
             <% let month=dayObj.getMonth() %>
-              <% let year=dayObj.getYear() %>
-                <% let today=new Date() %>
+              <% let year=dayObj.getFullYear() %>
+                <% let dateString=year + '-' + month + '-' + myDay %>
+                  <% let today=new Date() %>
 
 
-                  <% if(today.getDate()==myDay && today.getMonth()==month && today.getYear()==year) { %>
-                    Today -
-                    <% } %>
-                      <%= dayObj.toLocaleString("default", {month: 'long' }) %>/<%= dayObj.getDate() %>/<%=
-                            dayObj.getFullYear() %>
-        </h1>
+                    <% if(today.getDate()==myDay && today.getMonth()==month && today.getYear()==year) { %>
+                      Today -
+                      <% } %>
+                        <%= dayObj.toLocaleString("default", {month: 'long' }) %>/<%= dayObj.getDate() %>/<%=
+                              dayObj.getFullYear() %>
+        </h4>
 
-        <form action="/selectDay" method="POST">
-          <input type="date" class="form-control" name="date" value="<%= inputDate %>">
+        <div class="card history-date">
+          <form action="/selectDay" method="POST">
+            <div class="select-day">
+              <input type="date" class="form-control" name="date" value="<%= inputDate %>">
+              <button type="submit" class="btn btn-primary">Select Day</button>
+            </div>
+            <div class="gutter"></div>
+            <div class="select-day">
+              <button type="submit" formaction="backDay">Back Day</button>
+              <button type="submit" formaction="forwardDay">Forward Day</button>
+            </div>
+          </form>
+        </div>
+        <% if(breakfastTotal == 0 && lunchTotal == 0 && dinnerTotal == 0 && snackTotal == 0) { %>
 
-          <button type="submit" class="btn btn-primary">Select Day</button>
-          <button type="submit" class="btn btn-secondary" formaction="backDay">Back Day</button>
-          <button type="submit" class="btn btn-secondary" formaction="forwardDay">Forward Day</button>
-        </form>
+          <h2>Nothing logged for this day</h2>
+          <% } %>
+          <div class="gutter"></div>
+          <div class="card meal">
+            <h2>Breakfast - <%= breakfastTotal %>
+            </h2>
+              <% if (locals.breakfastArr) { %>
+                <% breakfastArr.forEach(item=> { %>
+                    <% include partials/logItem %>
+                      <% }); %>
+                        <% } %>
+          </div>
+          <div class="gutter"></div>
+          <div class="card meal">
+            <h2>Lunch - <%= lunchTotal %>
+            </h2>
+              <% if (locals.lunchArr) { %>
+                <% lunchArr.forEach(item=> { %>
+                    <% include partials/logItem %>
+                      <% }); %>
+                        <% } %>
+          </div>
+          <div class="gutter"></div>
+          <div class="card meal">
+            <h2>Dinner - <%= dinnerTotal %>
+            </h2>
+              <% if (locals.dinnerArr) { %>
+                <% dinnerArr.forEach(item=> { %>
+                    <% include partials/logItem %>
+                      <% }); %>
+                        <% } %>
+          </div>
+          <div class="gutter"></div>
+          <div class="card meal">
+            <h2>Snack - <%= snackTotal %>
+            </h2>
+              <% if (locals.snackArr) { %>
+                <% snackArr.forEach(item=> { %>
+                    <% include partials/logItem %>
 
-        <% if(locals.result && result.length> 0) { %>
+                        <% }); }  %>
 
-          <h2>Breakfast</h2>
-          <% var breakfastCal=0 %>
-            <% result.forEach((item)=> { %>
-              <% if (item.meal=='breakfast' ) { %>
-                <ul>
-                  <li>
-                    <%= item.food_name %>
-                      <ul>
-                        <% breakfastCal +=item.calories %>
-                          <% include partials/logItem %>
-
-                      </ul>
-                  </li>
-                </ul>
-                <% } %>
-                  <% }); %>
-                    <h4>Total Breakfast Calories: <%= breakfastCal %>
-                    </h4>
-
-                    <h2>Lunch</h2>
-                    <% var lunchCal=0 %>
-                      <% result.forEach((item)=> { %>
-                        <% if (item.meal=='lunch' ) { %>
-                          <ul>
-                            <li>
-                              <%= item.food_name %>
-                                <ul>
-                                  <% lunchCal +=item.calories %>
-                                    <% include partials/logItem %>
-                                </ul>
-                            </li>
-                          </ul>
-                          <% } %>
-                            <% }); %>
-                              <h4>Total Lunch Calories: <%= lunchCal %>
-                              </h4>
-
-                              <h2>Dinner</h2>
-                              <% var dinnerCal=0 %>
-                                <% result.forEach((item)=> { %>
-                                  <% if (item.meal=='dinner' ) { %>
-                                    <ul>
-                                      <li>
-                                        <%= item.food_name %>
-                                          <ul>
-                                            <% dinnerCal +=item.calories %>
-                                              <% include partials/logItem %>
-                                          </ul>
-                                      </li>
-                                    </ul>
-                                    <% } %>
-                                      <% }); %>
-                                        <h4>Total Dinner Calories: <%= dinnerCal %>
-                                        </h4>
-
-                                        <h2>Snack</h2>
-                                        <% var snackCal=0 %>
-                                          <% result.forEach((item)=> { %>
-                                            <% if (item.meal=='snack' ) { %>
-                                              <ul>
-                                                <li>
-                                                  <%= item.food_name %>
-                                                    <ul>
-                                                      <% snackCal +=item.calories %>
-                                                        <% include partials/logItem %>
-                                                    </ul>
-                                                </li>
-                                              </ul>
-                                              <% } %>
-                                                <% }); } else { %>
-                                                  <h2>Nothing logged for this day</h2>
-                                                  <% } %>
-                                                    <h4>Total Snack Calories: <%= snackCal %>
-                                                    </h4>
+          </div>
+          <div class="gutter"></div>
       </div>
-
+      <%- include partials/end-body-scripts.ejs %>
     </body>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="/javascripts/main.js"></script>
+
 
     </html>

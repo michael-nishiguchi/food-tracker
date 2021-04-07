@@ -84,8 +84,11 @@ router.post('/login', (req, res) => {
 	verify()
 		.then(() => {
 			res.cookie('session-token', token);
-			let today = new Date();
-			getHistory(req.user, res, today);
+			console.log('logged in');
+			res.send('success');
+
+			// let today = new Date();
+			// getHistory(req.user, res, today);
 		})
 		.catch(console.error);
 });
@@ -153,9 +156,9 @@ router.get('/analyze', checkAuthenticated, (req, res) => {
 				data: {
 					labels: dateArr,
 					datasets: [
-						{ label: 'Protein', data: proteinArr, fill: false, borderColor: 'blue' },
-						{ label: 'Carbs', data: carbArr, fill: false, borderColor: 'red' },
-						{ label: 'Fat', data: fatArr, fill: false, borderColor: 'green' }
+						{ label: 'Protein', data: proteinArr, fill: false, borderColor: 'rgb(102, 86, 135)' },
+						{ label: 'Carbs', data: carbArr, fill: false, borderColor: 'rgb(205, 70, 49)' },
+						{ label: 'Fat', data: fatArr, fill: false, borderColor: 'rgb(242, 175, 41)' }
 					]
 				}
 			};
@@ -164,7 +167,7 @@ router.get('/analyze', checkAuthenticated, (req, res) => {
 				type: 'line',
 				data: {
 					labels: dateArr,
-					datasets: [{ label: 'Calories', data: calArr, fill: false, borderColor: 'black' }]
+					datasets: [{ label: 'Calories', data: calArr, fill: false, borderColor: 'rgb(75, 187, 187)' }]
 				}
 			};
 
@@ -238,6 +241,11 @@ router.get('/logout', (req, res) => {
 		title: 'home'
 	});
 });
+router.get('/loginView', (req, res) => {
+	res.render('login', {
+		title: 'Login'
+	});
+});
 router.post(
 	'/addFood',
 	checkAuthenticated,
@@ -302,7 +310,7 @@ router.post(
 		check('servingInput')
 			.trim()
 			.escape()
-			.matches('[0-9'),
+			.matches('[0-9]'),
 		check('foodId')
 			.trim()
 			.escape(),
@@ -378,6 +386,11 @@ router.post(
 		.escape(),
 	(req, res) => {
 		let logId = req.body.logId;
+		let day = req.body.day;
+		let month = req.body.month;
+		let year = req.body.year;
+
+		var dateObj = new Date(year, month, day);
 
 		let sql = 'DELETE FROM log WHERE id = $1 AND userid = $2';
 
@@ -388,8 +401,8 @@ router.post(
 				throw err;
 			} else {
 				result = result.rows;
-				var today = new Date();
-				getHistory(req.user, res, today);
+				//var today = new Date();
+				getHistory(req.user, res, dateObj);
 			}
 		});
 	}
@@ -450,9 +463,9 @@ router.post(
 	'/getNutrients',
 	checkAuthenticated,
 	[
-		check('serving')
-			.trim()
-			.escape(),
+		// check('serving')
+		// 	.trim()
+		// 	.escape(),
 		check('servingInput')
 			.trim()
 			.escape(),
@@ -468,15 +481,20 @@ router.post(
 	],
 	(req, res) => {
 		let toSplit = req.body.serving;
-
+		console.log(typeof toSplit);
+		console.log('to split: ' + toSplit);
 		var uri = toSplit.substr(0, toSplit.indexOf(','));
 		let serving_unit = toSplit.split(',')[1];
 		let quantity = req.body.servingInput;
 
 		let foodId = req.body.foodId;
-		let search_results = req.body.search_results;
-		search_results = JSON.parse(search_results);
+		//let search_results = req.body.search_results;
+		//search_results = JSON.parse(search_results);
 		let foodName = req.body.food_name;
+
+		console.log('quantity: ' + quantity);
+		console.log('uri: ' + uri);
+		console.log('food id: ' + foodId);
 
 		const url =
 			'https://api.edamam.com/api/food-database/v2/nutrients?app_id=' +
@@ -496,10 +514,10 @@ router.post(
 
 		postData(url, myFood, res)
 			.then(nutrition_results => {
-				console.log(nutrition_results.totalNutrients);
+				console.log(nutrition_results);
 				res.render('nutrition', {
 					user: req.user,
-					search_results,
+					//search_results,
 					title: 'results',
 					nutrition_results,
 					food_name: foodName,
@@ -606,15 +624,54 @@ function getHistory(user, res, day) {
 				'-' +
 				('0' + day.getDate()).slice(-2);
 
-			let dayObj = parseISO(inputDate);
+			let breakfastTotal = 0,
+				lunchTotal = 0,
+				dinnerTotal = 0,
+				snackTotal = 0;
+			let breakfastArr = [],
+				lunchArr = [],
+				dinnerArr = [],
+				snackArr = [];
 
+			result.forEach(item => {
+				if (item.meal == 'breakfast') {
+					breakfastTotal += item.calories;
+					breakfastArr.push(item);
+				}
+				if (item.meal == 'lunch') {
+					lunchTotal += item.calories;
+					lunchArr.push(item);
+				}
+				if (item.meal == 'dinner') {
+					dinnerTotal += item.calories;
+					dinnerArr.push(item);
+				}
+				if (item.meal == 'snack') {
+					snackTotal += item.calories;
+					snackArr.push(item);
+				}
+			});
+			console.log(breakfastArr);
+			console.log(typeof breakfastArr);
+			console.log(result);
+
+			let dayObj = parseISO(inputDate);
+			console.log('rendering date: ' + inputDate);
 			res.render('history', {
 				title: 'history',
 				user,
-				result,
+				//result,
 				dayObj,
 				day,
-				inputDate
+				inputDate,
+				breakfastTotal,
+				lunchTotal,
+				dinnerTotal,
+				snackTotal,
+				breakfastArr,
+				lunchArr,
+				dinnerArr,
+				snackArr
 			});
 		}
 	});

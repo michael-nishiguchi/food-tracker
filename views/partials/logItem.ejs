@@ -1,24 +1,28 @@
-
-<form action="/deleteLog" method="POST">
-  <div class="card">
-  <ul class="list-group list-group-flush">
-  <input hidden name="foodId" value="<%= item.foodid %>">
+<form action="/deleteLog" method="POST" class="history-item ">
+  <h4>
+    <%= item.food_name %>
+  </h4>
+  <input hidden name="foodId" value="<%= item.logId %>">
   <input hidden name="uri" value="<%= item.uri %>">
-  <li class="list-group-item">Calories: <%= item.calories %>
-  </li>
-  <li  class="list-group-item"><input type="number" name="quantity" value="<%= item.servings %>">
-    <%= item.serving_unit %>
-  </li>
-  <li class="list-group-item">Protein: <%= item.protein %>
-  </li>
-  <li class="list-group-item">Fat: <%= item.fat %>
-  </li>
-  <li class="list-group-item">Carbs: <%= item.carb %>
-  </li>
+  <input hidden name="day" value="<%= myDay %>">
+  <input hidden name="month" value="<%= month %>">
+  <input hidden name="year" value="<%= year %>">
+
+  <div>Calories: <span class="right"><%= item.calories %></span>
+  </div>
+  <div class="serving-num">
+    <span class=""><%= item.serving_unit %></span>
+    <input class="" type="number" name="quantity" value="<%= item.servings %>">
+    <!-- <span class="right"><%= item.serving_unit %></span> -->
+  </div>
+  <div>Protein: <span class="right"><%= item.protein %></span>
+  </div>
+  <div>Fat: <span class="right"><%= item.fat %></span>
+  </div>
+  <div>Carbs: <span class="right"><%= item.carb %></span>
+  </div>
 
   <input hidden name="logId" value="<%=item.id %>">
-  <input class="btn btn-danger my-2 my-sm-0" type="submit" formaction="deleteLog" value="Delete">
-  <input class="btn btn-success" type="submit" formAction="editLog" value="Edit Servings">
-  </ul>
-  </div>
+  <input class="btn-danger" type="submit" formaction="deleteLog" value="Delete">
+  <input class="btn-edit" type="submit" formAction="editLog" value="Edit Servings">
 </form>

@@ -39,9 +39,10 @@ function onSignIn(googleUser) {
 	xhr.setRequestHeader('Content-Type', 'application/json');
 	xhr.onload = function() {
 		if (xhr.responseText == 'success') {
-			console.log('logged in');
+			//console.log('logged in as ' + user.getBasicProfile().getName());
 			//signOut();
-			//$.get('/history');
+			console.log(auth2);
+			//	jQuery.get('/history');
 			//location.assign('/history');
 		} else {
 			console.log('not logged in');

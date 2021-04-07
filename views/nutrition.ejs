@@ -3,12 +3,9 @@
 
 
     <body>
-      <h1>Nutrition results</h1>
+      <div class="container">
+      <h1>Nutrition Results</h1>
 
-      <%= user.name %>
-
-        <img src="<%= user.picture %>" alt="">
-        <button type="button" onclick="asdf()">Test</button>
 
         <% if(locals.nutrition_results) { %>
           <form class="nutritionalFacts" action="addFood" method="POST">
@@ -66,8 +63,8 @@
             <button class="btn btn-secondary" onclick="goBack()" type="button">Go Back</button>
           </form>
           <% } %>
-
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-            <script src="/javascripts/main.js"></script>
+        </div>
+          <%- include partials/end-body-scripts.ejs %>
+    </body>
 
             </html>
