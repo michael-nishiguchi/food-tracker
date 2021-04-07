@@ -2,7 +2,7 @@
   <h4>
     <%= item.food_name %>
   </h4>
-  <input hidden name="foodId" value="<%= item.logId %>">
+  <input hidden name="foodId" value="<%= item.foodid %>">
   <input hidden name="uri" value="<%= item.uri %>">
   <input hidden name="day" value="<%= myDay %>">
   <input hidden name="month" value="<%= month %>">
@@ -15,11 +15,11 @@
     <input class="" type="number" name="quantity" value="<%= item.servings %>">
     <!-- <span class="right"><%= item.serving_unit %></span> -->
   </div>
-  <div>Protein: <span class="right"><%= item.protein %></span>
+  <div>Protein: <span class="right"><%= item.protein %> g</span>
   </div>
-  <div>Fat: <span class="right"><%= item.fat %></span>
+  <div>Fat: <span class="right"><%= item.fat %> g</span>
   </div>
-  <div>Carbs: <span class="right"><%= item.carb %></span>
+  <div>Carbs: <span class="right"><%= item.carb %> g</span>
   </div>
 
   <input hidden name="logId" value="<%=item.id %>">

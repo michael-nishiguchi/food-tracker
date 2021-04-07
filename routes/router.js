@@ -238,7 +238,8 @@ router.get('/protectedRoute', checkAuthenticated, (req, res) => {
 router.get('/logout', (req, res) => {
 	res.clearCookie('session-token');
 	res.render('index', {
-		title: 'home'
+		title: 'home',
+		message: 'logout'
 	});
 });
 router.get('/loginView', (req, res) => {
@@ -414,9 +415,9 @@ router.post(
 		check('quantity')
 			.trim()
 			.escape(),
-		check('uri')
-			.trim()
-			.escape(),
+		// check('uri')
+		// 	.trim()
+		// 	.escape(),
 		check('foodId')
 			.trim()
 			.escape()
@@ -426,11 +427,21 @@ router.post(
 		let uri = req.body.uri;
 		let foodId = req.body.foodId;
 
+		let day = req.body.day;
+		let month = req.body.month;
+		let year = req.body.year;
+
+		var dateObj = new Date(year, month, day);
+
 		const url =
 			'https://api.edamam.com/api/food-database/v2/nutrients?app_id=' +
 			nutrition_app_id +
 			'&app_key=' +
 			nutrition_app_key;
+
+		console.log('uri: ' + uri);
+		console.log('quantity: ' + quantity);
+		console.log('foodid : ' + foodId);
 		let myFood = {
 			ingredients: [
 				{
@@ -452,8 +463,7 @@ router.post(
 
 			//update DB with new nutrition
 			alterTable(req.user, calories, fat, protein, carb, quantity, foodId).then(() => {
-				var today = new Date();
-				getHistory(req.user, res, today);
+				getHistory(req.user, res, dateObj);
 			});
 		});
 	}
@@ -651,12 +661,9 @@ function getHistory(user, res, day) {
 					snackArr.push(item);
 				}
 			});
-			console.log(breakfastArr);
-			console.log(typeof breakfastArr);
-			console.log(result);
 
 			let dayObj = parseISO(inputDate);
-			console.log('rendering date: ' + inputDate);
+
 			res.render('history', {
 				title: 'history',
 				user,

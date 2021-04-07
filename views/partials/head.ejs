@@ -21,4 +21,7 @@
   <!-- <link rel="stylesheet" href="/stylesheets/css/neumorphism.css"> -->
 
 
+  <% if(locals.message) { %>
+    <script>alert("<%= message %>"); </script>
+  <% } %>
 </head>

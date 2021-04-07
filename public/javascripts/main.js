@@ -8,6 +8,11 @@
 //  });​
 
 $(document).ready(function() {
+	//load in google auth lib
+	gapi.load('auth2', function() {
+		gapi.auth2.init();
+	});
+
 	var date = new Date();
 	var dateString =
 		date.getFullYear().toString() +
@@ -39,11 +44,7 @@ function onSignIn(googleUser) {
 	xhr.setRequestHeader('Content-Type', 'application/json');
 	xhr.onload = function() {
 		if (xhr.responseText == 'success') {
-			//console.log('logged in as ' + user.getBasicProfile().getName());
-			//signOut();
-			console.log(auth2);
-			//	jQuery.get('/history');
-			//location.assign('/history');
+			window.location.assign('/history');
 		} else {
 			console.log('not logged in');
 		}
@@ -53,11 +54,10 @@ function onSignIn(googleUser) {
 
 //sign out of GOogle
 function signOut() {
+	console.log('sign out function');
 	var auth2 = gapi.auth2.getAuthInstance();
 	auth2.signOut().then(function() {
-		console.log('User signed out.');
-		//$.get('/logout');
-		location.assign('/logout');
+		window.location.assign('/logout');
 	});
 }
 

@@ -4,9 +4,11 @@
 
     <body>
       <div class="container">
+        <div class="page-header">
       <h1>Nutrition Results</h1>
+    </div>
 
-
+    <div class="card">
         <% if(locals.nutrition_results) { %>
           <form class="nutritionalFacts" action="addFood" method="POST">
             <input name="uri" hidden value="<%= uri %>">
@@ -64,6 +66,7 @@
           </form>
           <% } %>
         </div>
+      </div>
           <%- include partials/end-body-scripts.ejs %>
     </body>
 
