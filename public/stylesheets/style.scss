@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap');
 
 $font-family: 'Nunito Sans', sans-serif;
+$default-font-size: 16px;
 
 $neumorphic-up: 13px 13px 26px #b9b9b9, -13px -13px 26px #ffffff;
 $neumorphic-down: inset 13px 13px 26px #b9b9b9, inset -13px -13px 26px #ffffff;
@@ -31,6 +32,8 @@ $btn-padding: 13px 10px;
 $nav-height: 100px;
 $border-radius: .5rem;
 
+$default-padding: 40px;
+
 * {
 	box-sizing: border-box;
 }
@@ -51,10 +54,27 @@ h5 {
 }
 
 .nutritionalFacts {
-	border: 1px solid black;
+	//border: 1px solid black;
+	border-radius: $border-radius;
 	padding: 20px;
-	width: 350px;
+	//width: 400px;
 	margin: 0 auto;
+	box-shadow: $inset-normal-shadow;
+
+	select {
+		width: 100%;
+		padding: $btn-padding;
+		background: $body-color;
+		border: none;
+		border-radius: $border-radius;
+		box-shadow: $normal-shadow;
+		margin-top: 20px;
+		margin-bottom: 20px;
+		&:hover {
+			cursor: pointer;
+			box-shadow: $inset-normal-shadow;
+		}
+	}
 
 	&:h2 {
 		text-align: center;
@@ -86,7 +106,7 @@ h5 {
 }
 
 .login-form {
-	padding: 20px;
+	padding: $default-padding;
 	width: 100%;
 	margin: 0 auto;
 
@@ -125,7 +145,7 @@ h5 {
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
-	padding: 20px;
+	padding: $default-padding;
 	border-radius: $border-radius;
 
 	.icon i {
@@ -162,7 +182,7 @@ form {
 	button,
 	input[type=submit] {
 		border-radius: $border-radius;
-		font-size: 18px;
+		font-size: $default-font-size;
 		padding: $btn-padding;
 		outline: none;
 		border: none;
@@ -217,7 +237,7 @@ form {
 			border: none;
 			box-shadow: $normal-shadow;
 			margin-bottom: 25px;
-			font-size: 18px;
+			font-size: $default-font-size;
 
 			&:hover {
 				cursor: pointer;
@@ -237,7 +257,7 @@ form {
 		}
 		input[type=date] {
 			box-shadow: $normal-shadow;
-			font-size: 18px;
+			font-size: $default-font-size;
 			&:hover {
 				box-shadow: $inset-normal-shadow;
 				cursor: pointer;
@@ -333,6 +353,7 @@ form {
 			width: 50%;
 			box-shadow: $normal-shadow;
 			margin-bottom: 0;
+			//text-align: right;
 		}
 
 		input[type=submit] {
@@ -392,11 +413,12 @@ form {
 		display: none;
 	}
 	> .nav-links {
-		font-size: 18px;
+		font-size: $default-font-size;
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
 		flex-grow: 5;
+		z-index: 10;
 
 		> a {
 			border-radius: $border-radius;
@@ -405,7 +427,7 @@ form {
 			text-decoration: none;
 			color: $body-font;
 			box-shadow: -3px -3px 7px #fff, 3px 3px 5px #ceced1;
-			width: 100px;
+			width: 85px;
 			text-align: center;
 			&:hover {
 				box-shadow: $inset-normal-shadow;
@@ -426,16 +448,18 @@ input[type=number]::-webkit-outer-spin-button {
 	opacity: 1;
 }
 
-@media (max-width: 900px) {
+.page-header {
+	padding: 40px;
+}
+
+@media only screen and (max-width: 900px) {
 	.nav {
 		> .nav-btn {
 			display: inline-block;
-			position: absolute;
-			right: 10px;
-			top: 10px;
+			padding-right: 20px;
 			> label {
 				border-radius: $border-radius;
-				box-shadow: -3px -3px 7px #eceff4, 3px 3px 5px #ceced1;
+				box-shadow: $normal-shadow;
 				display: inline-block;
 				width: 50px;
 				height: 50px;
@@ -443,6 +467,9 @@ input[type=number]::-webkit-outer-spin-button {
 				&:hover {
 					cursor: pointer;
 					box-shadow: $inset-normal-shadow;
+				}
+				&:active {
+					box-shadow: $deep-normal-shadow;
 				}
 				> span {
 					display: block;
@@ -453,23 +480,26 @@ input[type=number]::-webkit-outer-spin-button {
 			}
 		}
 		> .nav-links {
-			// background: $neumorphic-convex-background;
 			position: absolute;
 			display: block;
 			width: 100%;
 			background: $body-color;
 
-			// background: $neumorphic-convex-background;
 			height: 0px;
 			transition: all 0.3s ease-in;
 			overflow-y: hidden;
 			top: $nav-height;
 			left: 0px;
+			padding-left: 20px;
 			> a {
 				text-align: left;
 				display: block;
 				width: 100%;
 				box-shadow: none;
+				padding-left: 20px;
+			}
+			form input {
+				padding-left: 20px;
 			}
 		}
 		> .navbtn > label:hover,
@@ -483,6 +513,9 @@ input[type=number]::-webkit-outer-spin-button {
 			//height: calc(100vh - 100px);
 			height: calc(100vh - #{$nav-height});
 			overflow-y: auto;
+		}
+		.nav-header .nav-title {
+			padding-left: 40px;
 		}
 	}
 	.card {

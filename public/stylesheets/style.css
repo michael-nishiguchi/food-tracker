@@ -19,10 +19,24 @@ h5 {
 }
 
 .nutritionalFacts {
-  border: 1px solid black;
+  border-radius: 0.5rem;
   padding: 20px;
-  width: 350px;
   margin: 0 auto;
+  box-shadow: inset 3px 3px 7px #bcc6d8, inset -3px -3px 7px white;
+}
+.nutritionalFacts select {
+  width: 100%;
+  padding: 13px 10px;
+  background: #eceff4;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 3px 3px 7px #ccd4e1, -3px -3px 7px white;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.nutritionalFacts select:hover {
+  cursor: pointer;
+  box-shadow: inset 3px 3px 7px #bcc6d8, inset -3px -3px 7px white;
 }
 .nutritionalFacts:h2 {
   text-align: center;
@@ -53,7 +67,7 @@ h5 {
 }
 
 .login-form {
-  padding: 20px;
+  padding: 40px;
   width: 100%;
   margin: 0 auto;
 }
@@ -89,7 +103,7 @@ h5 {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  padding: 20px;
+  padding: 40px;
   border-radius: 0.5rem;
 }
 .card .icon i {
@@ -125,7 +139,7 @@ form input,
 form button,
 form input[type=submit] {
   border-radius: 0.5rem;
-  font-size: 18px;
+  font-size: 16px;
   padding: 13px 10px;
   outline: none;
   border: none;
@@ -178,7 +192,7 @@ form button:active {
   border: none;
   box-shadow: 3px 3px 7px #ccd4e1, -3px -3px 7px white;
   margin-bottom: 25px;
-  font-size: 18px;
+  font-size: 16px;
 }
 .search-results .card select:hover {
   cursor: pointer;
@@ -196,7 +210,7 @@ form button:active {
 }
 .search-results .card input[type=date] {
   box-shadow: 3px 3px 7px #ccd4e1, -3px -3px 7px white;
-  font-size: 18px;
+  font-size: 16px;
 }
 .search-results .card input[type=date]:hover {
   box-shadow: inset 3px 3px 7px #bcc6d8, inset -3px -3px 7px white;
@@ -340,11 +354,12 @@ form button:active {
   display: none;
 }
 .nav > .nav-links {
-  font-size: 18px;
+  font-size: 16px;
   display: flex;
   justify-content: space-around;
   align-items: center;
   flex-grow: 5;
+  z-index: 10;
 }
 .nav > .nav-links > a {
   border-radius: 0.5rem;
@@ -353,7 +368,7 @@ form button:active {
   text-decoration: none;
   color: #1b1c21;
   box-shadow: -3px -3px 7px #fff, 3px 3px 5px #ceced1;
-  width: 100px;
+  width: 85px;
   text-align: center;
 }
 .nav > .nav-links > a:hover {
@@ -371,16 +386,18 @@ input[type=number]::-webkit-outer-spin-button {
   opacity: 1;
 }
 
-@media (max-width: 900px) {
+.page-header {
+  padding: 40px;
+}
+
+@media only screen and (max-width: 900px) {
   .nav > .nav-btn {
     display: inline-block;
-    position: absolute;
-    right: 10px;
-    top: 10px;
+    padding-right: 20px;
   }
   .nav > .nav-btn > label {
     border-radius: 0.5rem;
-    box-shadow: -3px -3px 7px #eceff4, 3px 3px 5px #ceced1;
+    box-shadow: 3px 3px 7px #ccd4e1, -3px -3px 7px white;
     display: inline-block;
     width: 50px;
     height: 50px;
@@ -389,6 +406,9 @@ input[type=number]::-webkit-outer-spin-button {
   .nav > .nav-btn > label:hover {
     cursor: pointer;
     box-shadow: inset 3px 3px 7px #bcc6d8, inset -3px -3px 7px white;
+  }
+  .nav > .nav-btn > label:active {
+    box-shadow: inset 7px 7px 7px #7b90b3, inset -7px -7px 7px #dce1eb;
   }
   .nav > .nav-btn > label > span {
     display: block;
@@ -406,12 +426,17 @@ input[type=number]::-webkit-outer-spin-button {
     overflow-y: hidden;
     top: 100px;
     left: 0px;
+    padding-left: 20px;
   }
   .nav > .nav-links > a {
     text-align: left;
     display: block;
     width: 100%;
     box-shadow: none;
+    padding-left: 20px;
+  }
+  .nav > .nav-links form input {
+    padding-left: 20px;
   }
   .nav > #nav-check:not(:checked) ~ .nav-links {
     height: 0px;
@@ -419,6 +444,9 @@ input[type=number]::-webkit-outer-spin-button {
   .nav > #nav-check:checked ~ .nav-links {
     height: calc(100vh - 100px);
     overflow-y: auto;
+  }
+  .nav .nav-header .nav-title {
+    padding-left: 40px;
   }
 
   .card .third {
