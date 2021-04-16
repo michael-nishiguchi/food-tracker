@@ -23,18 +23,20 @@ window.onload = function() {
 
 	//spinner fades out when charts load
 	var fade = document.getElementById('spinner');
-	var intervalID = setInterval(function() {
-		if (!fade.style.opacity) {
-			fade.style.opacity = 1;
-		}
+	if (fade != null && fade != 'undefined') {
+		var intervalID = setInterval(function() {
+			if (!fade.style.opacity) {
+				fade.style.opacity = 1;
+			}
 
-		if (fade.style.opacity > 0) {
-			fade.style.opacity -= 0.1;
-		} else {
-			fade.style.display = 'none';
-			clearInterval(intervalID);
-		}
-	}, 50);
+			if (fade.style.opacity > 0) {
+				fade.style.opacity -= 0.1;
+			} else {
+				fade.style.display = 'none';
+				clearInterval(intervalID);
+			}
+		}, 50);
+	}
 };
 
 //sign into Google
