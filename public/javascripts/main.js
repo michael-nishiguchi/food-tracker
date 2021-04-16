@@ -1,13 +1,4 @@
-// $(document).ready ( function(){
-// 	alert("hi");
-// 	var date = new Date();
-// 	var dateString = date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString().padStart(2, 0) + '-' + date.getDate().toString().padStart(2, 0);
-
-// 	$("#datePicker").value = dateString;
-// 	console.log(dateString);
-//  });​
-
-$(document).ready(function() {
+window.onload = function() {
 	//load in google auth lib
 	gapi.load('auth2', function() {
 		gapi.auth2.init();
@@ -24,15 +15,27 @@ $(document).ready(function() {
 			.toString()
 			.padStart(2, 0);
 
-	console.log(dateString);
-	$('.dateFill').val(dateString);
-	//$('input[type=date]').val(dateString);
+	var allDates = document.getElementsByClassName('dateFill');
 
-	//spinner while charts load
-	$('img').on('load', function() {
-		$('#spinner').fadeOut();
-	});
-});
+	for (var i = 0; i < allDates.length; i++) {
+		allDates[i].value = dateString;
+	}
+
+	//spinner fades out when charts load
+	var fade = document.getElementById('spinner');
+	var intervalID = setInterval(function() {
+		if (!fade.style.opacity) {
+			fade.style.opacity = 1;
+		}
+
+		if (fade.style.opacity > 0) {
+			fade.style.opacity -= 0.1;
+		} else {
+			fade.style.display = 'none';
+			clearInterval(intervalID);
+		}
+	}, 50);
+};
 
 //sign into Google
 function onSignIn(googleUser) {
@@ -72,63 +75,3 @@ function myAlert() {
 function goBack() {
 	window.history.back();
 }
-
-// $('#getCalories').click(function(evt) {
-// 	let quantity = $('.servingInput');
-// 	console.log(quantity);
-// });
-
-//calculate calories as the user types
-$(function() {
-	var addDiv = false;
-	//console.log(myData);
-	$('.servingInput').keyup(function(evt) {
-		// var newNode = document.createElement('div');
-		// newNode.innerHTML = 'test';
-		// var referenceNode = document.querySelector(evt.target);
-		//referenceNode.after(newNode);
-
-		//var siblings = $(this).siblings();
-		var calories = $(this)
-			.prev()
-			.attr('value');
-		console.log(calories);
-
-		var defaultServing = $(this)
-			.next()
-			.first()
-			.find('option:eq(0)')
-			.val();
-		console.log(defaultServing);
-
-		var servingSize = $(this)
-			.next()
-			.first()
-			.find(':selected')
-			.val();
-		console.log(servingSize);
-
-		var servings = $(this).next();
-		// console.log($(this).next().attr(':selected'));
-		// console.log($(this).next());
-
-		// console.log($('option:selected').val());
-		// console.log(servings);
-
-		var caloriePerGram = calories / defaultServing;
-
-		function calculateCalories() {}
-
-		// console.log($(this));
-		// console.log(evt);
-		if (!addDiv) {
-			//$(this).after('<p>test</p>');
-			$('#totalCalories').text('test');
-			//addDiv = true;
-		}
-	});
-});
-
-//food database
-
-// https://api.edamam.com/api/food-database/v2/parser?ingr=red%20apple&app_id=90aa6a3e&app_key=24f01456634cdf030a22c0e6bb73f0a3

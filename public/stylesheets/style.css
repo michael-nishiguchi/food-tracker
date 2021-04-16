@@ -326,6 +326,12 @@ form button:active {
   box-shadow: inset 7px 7px 7px #3d150f, inset -7px -7px 7px #b83f2c;
 }
 
+.fadeOut {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+@keyframes fade {}
 .chart {
   width: 100%;
   box-shadow: inset 3px 3px 7px #bcc6d8, inset -3px -3px 7px white;

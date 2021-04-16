@@ -386,6 +386,14 @@ form {
 	}
 }
 
+.fadeOut {
+	opacity: 0;
+	transition: opacity 1s ease-in-out;
+}
+
+@keyframes fade {
+}
+
 .chart {
 	width: 100%;
 	box-shadow: $inset-normal-shadow;

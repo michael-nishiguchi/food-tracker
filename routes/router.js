@@ -357,6 +357,7 @@ router.post(
 				let carb = Math.round(nutrition_results.totalNutrients.CHOCDF.quantity);
 				console.log('calories: ' + calories + ' fat: ' + fat + ' protein: ' + protein + ' carb: ' + carb);
 
+				//add food to postgres DB
 				addFood(
 					req,
 					res,
@@ -373,6 +374,7 @@ router.post(
 					uri
 				).then(() => {
 					let date = parseISO(date_eaten);
+					//dispay food log
 					getHistory(req.user, res, date);
 				});
 			})
@@ -590,6 +592,13 @@ async function addFood(
 	});
 	let sql =
 		'INSERT INTO log (food_name, calories, fat, protein, servings, meal, userId, carb, date_eaten, serving_unit, foodId, uri) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)';
+
+	console.log('SQL: ' + sql);
+
+	//https://node-postgres.com/features/transactions
+
+	// let sql =
+	// 	'START TRANSACTION (INSERT INTO log (food_name, calories, fat, protein, servings, meal, userId, carb, date_eaten, serving_unit, foodId, uri) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12))  COMMIT';
 
 	client.connect();
 	await client.query(
